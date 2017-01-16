@@ -104,4 +104,10 @@
     exports.ajaxRequest = ajaxRequest
 
     window.Site = exports
+
+    $(function() {
+        $('.article-content table').addClass('ui collapsing padded table')
+        $('.article-content code > div.highlight').addClass('ui segment secondary')        
+    })
+
 })()

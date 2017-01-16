@@ -9,3 +9,7 @@ body > #main-wrap {
 .error-message {
     display: none;
 }
+
+.article-content code > div.highlight {
+    padding: 0px 15px;
+}

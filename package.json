@@ -17,9 +17,8 @@
     "mysql2": "^1.1.2",
     "nodemailer": "^2.7.0",
     "ono": "^2.2.1",
-    "passport": "^0.3.2",
-    "passport-local": "^1.0.0",
     "password-generator": "^2.1.0",
+    "pygmentize-bundled": "^2.3.0",
     "request": "^2.79.0",
     "rfr": "^1.2.3",
     "uuid": "^3.0.1"

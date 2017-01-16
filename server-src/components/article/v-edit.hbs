@@ -5,7 +5,7 @@
     name="articleForm"
     data-url="/api/article/{{article.id}}"
     data-method="PUT"
-    data-redirect-to="/pages/articles"
+    data-redirect-to="/"
     onSubmit="Site.submitForm(this)">
 
     <div class="ui message error">
@@ -26,6 +26,6 @@
     </div>
 
     <input type="submit" class="ui button primary" value="Salvar"/>
-    <a href="/pages/articles" class="ui button">Cancelar</button>
+    <a href="/" class="ui button">Cancelar</a>
 
 </form>
