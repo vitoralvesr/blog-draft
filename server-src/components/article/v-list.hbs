@@ -1,0 +1,71 @@
+<div class="ui top fixed mini menu">
+    <div class="right menu">
+        {{#if $online}}
+            <a class="ui dropdown item">
+                {{$userName}}
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="ui dropdown item">
+                        <i class="dropdown icon"></i>
+                        Conta
+                        <div class="left menu">
+                            <div class="item" onclick="window.location.pathname='/pages/user/password-change'">
+                                Alterar senha
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a class="item" onclick="ArticleList.logout()">Sair</a>
+        {{else}}
+            <a href="/pages/user/login" class="item">Login</a>
+        {{/if}}
+    </div>
+</div>
+
+<h1>{{title}}</h1>
+<style scoped>
+    .article-heading > h3 {
+        display: inline-block;
+    }
+    .article-heading > .buttons {
+        float: right;
+    }
+</style>
+
+<div>
+    {{#each itens}}
+    <div class="ui segment">
+        <div class="article-heading">
+            <h3 class="ui header">{{title}}</h3>
+            <div class="buttons">
+                {{#if @root.$online}}
+                <a href="/pages/article/{{id}}/edit">
+                    <div class="ui icon button">
+                        <i class="edit icon"></i>
+                    </div>
+                </a>
+                {{/if}}
+            </div>            
+        </div>
+        <p>{{content}}</p>
+    </div>
+    {{/each}}
+</div>
+
+
+<script>
+    var ArticleList = {}
+
+
+    ArticleList.logout = function() {
+        Site.ajaxRequest({method:'GET', url:'/api/user/logout'}).then(() => {
+            window.location.reload()
+        })
+    }
+
+
+    $(function(){
+        $('.ui.menu .ui.dropdown.item').dropdown()
+    })
+</script>

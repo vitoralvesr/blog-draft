@@ -1,0 +1,11 @@
+body {
+    padding: 30px;
+}
+body > #main-wrap {
+    max-width: 800px;
+    margin-right: auto;
+    margin-left: auto;
+}
+.error-message {
+    display: none;
+}

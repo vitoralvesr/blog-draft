@@ -1,0 +1,31 @@
+<h1>{{title}}</h1>
+
+<form
+    class="ui form" 
+    name="articleForm"
+    data-url="/api/article/{{article.id}}"
+    data-method="PUT"
+    data-redirect-to="/pages/articles"
+    onSubmit="Site.submitForm(this)">
+
+    <div class="ui message error">
+        <i class="close icon"></i>
+        <div class="header">
+            Erro.
+        </div>
+        <p></p>
+    </div>
+
+    <div class="field">
+        <label>Título</label>
+        <input type="text" name="title" value={{article.title}}>
+    </div>
+    <div class="field">
+        <label>Conteúdo</label>
+        <textarea name="content">{{article.content}}</textarea>
+    </div>
+
+    <input type="submit" class="ui button primary" value="Salvar"/>
+    <a href="/pages/articles" class="ui button">Cancelar</button>
+
+</form>

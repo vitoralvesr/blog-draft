@@ -1,0 +1,27 @@
+{
+  "name": "chat-example",
+  "version": "0.0.0",
+  "description": "",
+  "main": "server-src/index.js",
+  "repository": "",
+  "author": "",
+  "dependencies": {
+    "bcrypt": "^1.0.2",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "express-handlebars": "^3.0.0",
+    "express-mysql-session": "^1.2.0",
+    "express-session": "^1.14.2",
+    "lodash": "^4.17.4",
+    "marked": "^0.3.6",
+    "mysql2": "^1.1.2",
+    "nodemailer": "^2.7.0",
+    "ono": "^2.2.1",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "password-generator": "^2.1.0",
+    "request": "^2.79.0",
+    "rfr": "^1.2.3",
+    "uuid": "^3.0.1"
+  }
+}

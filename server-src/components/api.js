@@ -1,0 +1,30 @@
+const bodyParser = require('body-parser')
+const auth = global.$rfr('components/auth-mw')
+const express = require('express')
+const api = express.Router()
+
+api.use(bodyParser.json())
+api.use(auth.session)
+
+
+api.use('/user', require('./user/api'))
+
+
+api.use(auth.authGate)
+// -- everything below is always session gated --
+
+
+api.use('/article', require('./article/api'))
+
+
+api.use( (error, req, res, next) => {
+    console.error(error)
+    res.status(error.statusCode||500).send({
+        error : {
+            message : error.message
+        }
+    })
+})
+
+
+module.exports = api

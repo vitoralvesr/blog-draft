@@ -1,0 +1,19 @@
+{
+    "env" : {
+        "node" : true ,
+        "es6" : true
+    } ,
+    "rules" : {
+        "no-unused-vars": [2, { "args" : "none" } ] ,
+        "no-undef" : 2
+    } ,
+    "globals" : {
+        "$rfr" : true ,
+        "$connection" : true ,
+        "$legacyConnection" : true ,
+        "$customRender" : true ,
+        "$checkParams" : true ,
+        "$promisify" : true ,
+        "$debugMw" : true
+    }
+}

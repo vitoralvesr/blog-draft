@@ -1,0 +1,41 @@
+<h1>Novo usuário</h1>
+
+<form class="ui form"
+    name="newUserForm"
+    data-url="/api/user/create"
+    data-method="POST"
+    data-redirect-to="/"
+    onSubmit="Site.submitForm(this)">
+
+    <div class="ui message error">
+        <i class="close icon"></i>
+        <div class="header">
+            Erro.
+        </div>
+        <p></p>
+    </div>
+
+    <div class="field">
+        <label>Nome de Usuário</label>
+        <input type="text" name="username" data-validate="empty"/>
+    </div>
+    <div class="field">
+        <label>Email</label>
+        <input type="text" name="email" data-validate="empty">
+    </div>
+
+    <input type="submit" class="ui button primary" value="OK"></input>
+    <button class="ui button cancel-button">Cancelar</button>
+
+</form>
+
+<script>
+$(function(){
+    $('.ui.form').form({
+        fields : {
+            username : 'empty' ,
+            email : 'email'
+        }
+    })
+})
+</script>
