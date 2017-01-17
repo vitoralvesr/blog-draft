@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "module": "commonjs" ,
+        "target" : "es6" ,
+        "outDir" : "./server-dist" ,
+        "sourceMap": true ,
+        "strictNullChecks": true
+    } ,
+    "include" : [
+        "./server-src/**/*.ts"
+    ]
+}

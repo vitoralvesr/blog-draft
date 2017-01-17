@@ -22,5 +22,12 @@
     "request": "^2.79.0",
     "rfr": "^1.2.3",
     "uuid": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^1.0.0",
+    "@types/express": "^4.0.34",
+    "@types/express-session": "0.0.32",
+    "@types/node": "^7.0.0",
+    "typescript": "^2.1.5"
   }
 }

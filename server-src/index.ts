@@ -1,8 +1,8 @@
-const express = require('express')
+import express = require('express')
 const app = express()
-const ono = require('ono')
+import ono = require('ono')
 global.$rfr = require('rfr')
-$rfr.setRoot(__dirname)
+global.$rfr.setRoot(__dirname)
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
@@ -67,6 +67,7 @@ mysql.createConnection(connectionParams).then( connection => {
             {}
         )
     )
+    
     app.use('/pages', require('./components/pages'))
     app.use('/api', require('./components/api'))
     app.get('/', (req, res) => {

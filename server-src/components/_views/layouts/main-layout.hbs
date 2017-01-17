@@ -11,6 +11,32 @@
 </head>
 <body>
     <div id="main-wrap">
+
+        <div class="ui top fixed mini menu">
+            <div class="right menu">
+                {{#if $online}}
+                    <a class="ui dropdown item">
+                        {{$userName}}
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="ui dropdown item">
+                                <i class="dropdown icon"></i>
+                                Conta
+                                <div class="left menu">
+                                    <div class="item" onclick="window.location.pathname='/pages/user/password-change'">
+                                        Alterar senha
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <a class="item" onclick="ArticleList.logout()">Sair</a>
+                {{else}}
+                    <a href="/pages/user/login" class="item">Login</a>
+                {{/if}}
+            </div>
+        </div>
+
         {{{body}}}
     </div>
 </body>

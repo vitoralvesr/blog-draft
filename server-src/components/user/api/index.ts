@@ -1,36 +1,30 @@
 const api = module.exports = require('express').Router()
 
-const passwordGen = require('password-generator')
-const bcrypt = require('bcrypt')
-const ono = require('ono')
-const connection = () => $connection
-const auth = $rfr('components/auth-mw')
-const uuid = require('uuid/v1')
-const _mailer = require('./utils').mailer
+import passwordGen = require('password-generator')
+import bcrypt = require('bcrypt')
+import ono = require('ono')
+const connection = () => global.$connection
+const auth = global.$rfr('components/auth-mw')
+import uuid = require('uuid/v1')
+import _utils = require('./utils')
+const _mailer = _utils.mailer
+const { $checkParams } = global
 
 /**
  * Serviço de autenticação
  */
-function userLogin({ username, password, session }) {
-    return Promise.resolve().then(() => {
-        if (!username || !password) throw ono('Falta o nome de usuário ou senha.')
-        if (session.userId) throw ono('Primeiro faça o logout da sessão atual.')
+async function userLogin({ username, password, session }) {
+    if (!username || !password) throw ono('Falta o nome de usuário ou senha.')
+    if (session.userId) throw ono('Primeiro faça o logout da sessão atual.')
 
-        let _userId
-        return connection()
-            .execute('SELECT id, hash from `users` WHERE name = ?', [username])
-            .then( ([rows]) => {
-                if (!rows.length) throw ono({statusCode:401}, 'Credenciais inválidas.')
-                _userId = rows[0].id
-                return bcrypt.compare(password, rows[0].hash)
-            })
-            .then( result => {
-                if (!result) throw ono({statusCode:401}, 'Credenciais inválidas.')
-                session.userId = _userId
-                session.userName = username
-                return { status : 'OK' }
-            })
-    })
+    let [rows] = await connection().execute('SELECT id, hash from `users` WHERE name = ?', [username])
+    if (!rows.length) throw ono({statusCode:401}, 'Credenciais inválidas.')
+    let _userId = rows[0].id
+    let result = await bcrypt.compare(password, rows[0].hash)
+    if (!result) throw ono({statusCode:401}, 'Credenciais inválidas.')
+    session.userId = _userId
+    session.userName = username
+    return { status : 'OK' }
 }
 
 

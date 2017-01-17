@@ -1,6 +1,6 @@
-const bodyParser = require('body-parser')
+import bodyParser = require('body-parser')
 const auth = global.$rfr('components/auth-mw')
-const express = require('express')
+import express = require('express')
 const api = express.Router()
 
 api.use(bodyParser.json())
@@ -27,4 +27,4 @@ api.use( (error, req, res, next) => {
 })
 
 
-module.exports = api
+export = api

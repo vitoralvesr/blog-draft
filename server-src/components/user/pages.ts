@@ -1,6 +1,6 @@
 const pages = require('express').Router()
 const api = require('./api')
-const authMw = $rfr('components/auth-mw')
+const authMw = global.$rfr('components/auth-mw')
 
 pages.get('/login', (req, res) => {
     res.render('v-login')
@@ -20,7 +20,7 @@ pages.get('/password-reset-request', (req, res) => {
 pages.get('/password-reset-confirm/:token', (req, res, next) => {
     var _token
     Promise.resolve().then(() => {
-        ;({ _token } = $checkParams(req.params, 'token'))
+        ;({ _token } = global.$checkParams(req.params, 'token'))
         return api.passwordResetConfirm(_token)
     }).then( password => {
         //i shouldnt render the password unless maybe on https...

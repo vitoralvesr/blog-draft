@@ -1,5 +1,5 @@
-const nodemailer = require('nodemailer')
-const marked = require('marked')
+import nodemailer = require('nodemailer')
+import marked = require('marked')
 
 //use a 3rd-party email service like mailgun in production
 var __transporter = nodemailer.createTransport({
@@ -9,7 +9,8 @@ var __transporter = nodemailer.createTransport({
         pass : process.env.APP_EMAIL_PASS
     }
 })
-function _mailer({ email, subject, content }) {
+
+export function mailer({ email, subject, content }) {
     return new Promise((resolve, reject) => {
         __transporter.sendMail({
             from : process.env.APP_EMAIL_USER ,
@@ -23,4 +24,3 @@ function _mailer({ email, subject, content }) {
         })
     })
 }
-exports.mailer = _mailer
