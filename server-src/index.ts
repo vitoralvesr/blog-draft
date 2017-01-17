@@ -52,7 +52,8 @@ const mysqlLegacy = require('mysql2')
 const connectionParams = {
     host : 'localhost' || process.env.APP_DB_HOST ,
     user : 'root' || process.env.APP_DB_USER ,
-    database : 'test' || process.env.APP_DB_DB    
+    database : 'test' || process.env.APP_DB_DB ,
+    password : '' || process.env.APP_DB_PASS    
 }
 mysql.createConnection(connectionParams).then( connection => {
     global.$connection = connection
