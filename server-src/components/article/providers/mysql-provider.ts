@@ -17,8 +17,28 @@ export class MysqlProvider extends ArticleProvider {
     }
 
 
+
+    async create() {
+        var d = this._dbData
+        return connection().execute(
+            `INSERT INTO
+                articles(source, github_user, github_repo, github_path, title, content)
+                VALUES (? ,?, ?, ?, ?, ?)`,
+            [d.source, d.githubUser || '', d.githubRepo || '', d.githubPath || '', d.title,
+                d.content]
+        )
+    }
+
+
     async get() {
         return this._dbData
+    }
+
+
+    async delete() {
+        if (!this._dbData.id) throw Error('Faltou passar o id.')
+        return connection()
+            .execute(`DELETE FROM articles WHERE id = ?`, [this._dbData.id])
     }
 
 }

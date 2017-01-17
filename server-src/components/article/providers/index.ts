@@ -10,7 +10,8 @@ export abstract class ArticleProvider {
     constructor(a: Article) { } 
 
     
-    static async init<T extends ArticleProvider>(idOrArticle: number|Article) {
+    static async init<T extends ArticleProvider>(idOrArticle: number | Article)
+    : Promise<T> {
         if (typeof idOrArticle === 'object') return end(idOrArticle)
         
         var [rows] = await connection()
@@ -20,8 +21,8 @@ export abstract class ArticleProvider {
 
         function end(article:Article) {
             let MysqlProvider = require('./mysql-provider').MysqlProvider
-            if (article.source === 'mysql' || !article.source) return new MysqlProvider(article)
-            throw Error('Não esperado.')
+            /*if (article.source === 'mysql' || !article.source)*/ return new MysqlProvider(article)
+            //throw Error('Não esperado.')
         }    
     }
     
@@ -38,6 +39,8 @@ export abstract class ArticleProvider {
 
 
     async abstract update(id)
-    async abstract get() : Promise<Article>
+    async abstract get(): Promise<Article>
+    async abstract create(): Promise<void>
+    async abstract delete(): Promise<void>
 
 }

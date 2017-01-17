@@ -2,6 +2,8 @@
 <head>
     <title>{{title}}</title>
 
+    <meta charset="UTF-8">
+
     <link rel="stylesheet" href="/assets/semantic.min.css" type="text/css"></link>
     <link rel="stylesheet" href="/assets/main.css" type="text/css"></link>
     <link rel="stylesheet" href="/assets/pygments-github.css" type="text/css"></link>    
@@ -15,6 +17,9 @@
         <div class="ui top fixed mini menu">
             <div class="right menu">
                 {{#if $online}}
+                    <a class="ui item" href="/pages/article/new">
+                        Novo post
+                    </a>
                     <a class="ui dropdown item">
                         {{$userName}}
                         <i class="dropdown icon"></i>

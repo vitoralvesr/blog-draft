@@ -14,7 +14,7 @@ api.use(auth.authGate)
 // -- everything below is always session gated --
 
 
-api.use('/article', require('./article/api'))
+api.use('/article', global.$debugMw('article'), require('./article/api'))
 
 
 api.use( (error, req, res, next) => {

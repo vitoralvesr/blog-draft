@@ -64,7 +64,7 @@
             innerp.innerText = (err.error && err.error.message) || err.message || err
             formEl.querySelector('.ui.message.error').style.display = 'block'
             let hideBtn = formEl.querySelector('.ui.message.error > .close.icon')
-            hideBtn.addEventListener('click', _hidebtnfn)
+            hideBtn && hideBtn.addEventListener('click', _hidebtnfn)
             throw err
         })
     }
@@ -102,6 +102,15 @@
         })
     }
     exports.ajaxRequest = ajaxRequest
+
+
+    exports.findParentField = function(element) {
+        var $el = $(element)
+        while (!$el.hasClass('field')) {
+            $el = $el.parent()
+        }
+        return $el
+    }
 
     window.Site = exports
 

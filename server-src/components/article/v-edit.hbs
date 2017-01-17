@@ -16,6 +16,8 @@
         <p></p>
     </div>
 
+    <input type="hidden" value="{{article.id}}" name="id">
+
     <div class="field">
         <label>Título</label>
         <input type="text" name="title" value={{article.title}}>
@@ -27,5 +29,29 @@
 
     <input type="submit" class="ui button primary" value="Salvar"/>
     <a href="/" class="ui button">Cancelar</a>
+    <div
+        onclick="deletePost()"
+        class="ui labeled icon button basic right floated">
+        <i class="icon delete"></i>
+        Excluir
+    </a>
 
 </form>
+
+<script>
+function deletePost() {
+    var id = articleForm.id.value
+    $.ajax({
+        method : 'DELETE' ,
+        url : '/api/article/' + id
+    }).then(() => {
+        window.location.pathname = '/'
+    })
+    .catch( function(err) {
+        $('.ui.message.error')
+            .html('<p>' + (err.message || err.responseText) + '</p>')
+            .show()
+        $('body').animate({scrollTop:0},1000)
+    })
+}
+</script>

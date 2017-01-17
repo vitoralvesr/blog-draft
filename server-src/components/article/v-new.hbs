@@ -1,0 +1,126 @@
+<h1>{{title}}</h1>
+
+<form
+    class="ui form" 
+    name="articleForm"
+    data-url="/api/article"
+    data-method="POST"
+    data-redirect-to="/"
+>
+
+    <div class="ui message error">
+        <i class="close icon"></i>
+        <div class="header">
+            Erro.
+        </div>
+        <p></p>
+    </div>
+
+    <div class="field">
+        <label>Título</label>
+        <input type="text" name="title" value={{article.title}}>
+    </div>
+
+    <div class="field">
+        <label>Fonte</label>
+        <select name="source">
+            <option value="mysql">Padrão</option>
+            <option value="git">Importar arquivo markdown do Github</option>
+        </select>
+    </div>
+
+    <div class="fields git-field">
+        <div class="four wide field">
+            <label>Usuário</label>
+            <input type="text" name="githubUser"/>
+        </div>
+        <div class="four wide field">
+            <label>Repositório</label>
+            <input type="text" name="githubRepo"/>
+        </div>
+        <div class="eight wide field">
+            <label>Caminho</label>
+            <div class="ui action input">
+                <input type="text" name="githubPath" placeholder="caminho/arquivo.md"/>
+                <button class="ui button" id="gitVerify">Buscar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="field">
+        <label>Conteúdo</label>
+        <textarea name="content">{{article.content}}</textarea>
+    </div>
+
+    <input type="submit" class="ui button primary" value="Salvar"/>
+    <a href="/" class="ui button">Cancelar</a>
+
+</form>
+
+<script>
+$(function(){
+    $('select').dropdown()
+
+    //git source extra field
+    var gitField = articleForm.querySelector('.git-field')
+    function gitFieldDisplay(ev) {
+        gitField.style.display = (this.value === 'git') ?
+            'flex' : 'none'
+    }
+    gitFieldDisplay()
+    articleForm.source.addEventListener('change', gitFieldDisplay)
+
+    document.getElementById('gitVerify')
+        .addEventListener( 'click' , function(event) {
+            var that = this
+            this.innerHTML = 'Verificando...'
+            var _owner = articleForm.githubUser.value
+            var _repository = articleForm.githubRepo.value
+            var _path = articleForm.githubPath.value
+
+            if (!_owner || !_repository || !_path) return 
+
+            $.get('https://api.github.com/repos/' + _owner + '/'
+                     +  _repository + '/contents/' + _path )
+                .then( resp => {
+                    articleForm.content.value = atob(resp.content)
+                })
+                .catch( err => {
+                    $(articleForm).find('.ui.message.error')
+                        .html('<p>Não encontrado</p>')
+                        .show()
+                    $('html, body').animate({scrollTop:0},1000);
+                })
+                .then( () => {
+                    that.innerHTML = 'Buscar'
+                })
+        })
+
+    articleForm.addEventListener('submit', function(event) {
+        let mandatory = ['title', 'source']
+        if (this.source.value == 'git') mandatory.push('githubUser', 'githubRepo', 'githubPath')
+        var missing = false
+        for ( var it in mandatory ) {
+            var field = mandatory[it]
+            var $parent = Site.findParentField(this[field])
+            if (!this[field].value) {
+                missing = true
+                $parent.addClass('error')
+            } else {
+                $parent.removeClass('error')
+            }
+        }
+
+        if (missing) {
+            event.preventDefault()
+            $(articleForm).find('.ui.message.error')
+                 .html('<p>Preencha todos os campos obrigatórios.</p>')
+                 .show()
+            $('html, body').animate({scrollTop:0},1000);
+            return
+        }
+
+        Site.submitForm(this)
+    })
+})
+</script>

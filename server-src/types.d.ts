@@ -28,5 +28,8 @@ type Article = {
     id
     title,
     content,
-    source : 'mysql'|'git'
+    source: 'mysql' | 'git'
+    githubUser?
+    githubRepo?
+    githubPath?
 }

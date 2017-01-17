@@ -9,7 +9,7 @@ marked.setOptions({
     sanitize : true ,
     highlight: function (code, lang, callback) {
         pygments({ lang: lang, format: 'html' }, code, (err, result) => {
-            callback(err, result.toString());
+            callback(err, String(result));
         });
     }
 })
@@ -19,20 +19,24 @@ var pages = express.Router()
 pages.get('/list', async (req, res, next) => {
     try {
         var rows = await ArticleProvider.list()
-        var all = rows.map( row => {
-            return $promisify( marked, row.content ).then( content => {
-                row.content = content
-                return row
-            })
+        var all = rows.map(async row => {
+            var content = await $promisify( marked, row.content )
+            row.content = content
+            return row
         })
         var rows2 = await Promise.all(all)
         res.render('v-list', {
-            title : 'Lista de artigos' ,
+            title : 'Blog' ,
             itens : rows2 
         })
     } catch (err) {
         next(err)
     }
+})
+
+
+pages.get('/new', auth.authGate, async (req, res, next) => {
+    res.render('v-new', { title : 'Novo post' })
 })
 
 
