@@ -6,7 +6,7 @@ import ono = require('ono')
 const connection = () => global.$connection
 const auth = global.$rfr('components/auth-mw')
 import uuid = require('uuid/v1')
-import _utils = require('./utils')
+import _utils = require('./mail')
 const _mailer = _utils.mailer
 const { $checkParams } = global
 

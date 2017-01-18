@@ -1,16 +1,14 @@
 const auth = global.$rfr('components/auth-mw')
 import express = require('express')
 import marked = require('marked')
-import pygments = require('pygmentize-bundled')
+const highlight = require("highlight.js")
 const { $promisify } = global
 import { ArticleProvider } from './providers'
 
 marked.setOptions({
     sanitize : true ,
-    highlight: function (code, lang, callback) {
-        pygments({ lang: lang, format: 'html' }, code, (err, result) => {
-            callback(err, String(result));
-        });
+    highlight: function (code) {
+        highlight.highlightAuto(code).value;
     }
 })
 var pages = express.Router()
