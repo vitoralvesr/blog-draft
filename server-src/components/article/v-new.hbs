@@ -29,20 +29,20 @@
         </select>
     </div>
 
-    <div class="fields git-field">
-        <div class="four wide field">
+    <div class="three fields git-field">
+        <div class="field">
             <label>Usuário</label>
             <input type="text" name="githubUser"/>
         </div>
-        <div class="four wide field">
+        <div class="field">
             <label>Repositório</label>
             <input type="text" name="githubRepo"/>
         </div>
-        <div class="eight wide field">
+        <div class="field">
             <label>Caminho</label>
             <div class="ui action input">
                 <input type="text" name="githubPath" placeholder="caminho/arquivo.md"/>
-                <button class="ui button" id="gitVerify">Buscar</button>
+                <div class="ui button" id="gitVerify">Buscar</div>
             </div>
         </div>
     </div>
@@ -80,20 +80,31 @@ $(function(){
 
             if (!_owner || !_repository || !_path) return 
 
-            $.get('https://api.github.com/repos/' + _owner + '/'
-                     +  _repository + '/contents/' + _path )
-                .then( resp => {
-                    articleForm.content.value = atob(resp.content)
+            Site.ajaxRequest({
+                method: 'GET', 
+                url: 'https://api.github.com/repos/' + _owner + '/' +  _repository + '/contents/' + _path ,
+                body: {}
+            })
+            .then( function(resp) {
+                //articleForm.content.value = atob(resp.content)
+                return Site.ajaxRequest({
+                    url : '/api/article/github-utf8' ,
+                    method: 'POST' ,
+                    body: resp
                 })
-                .catch( err => {
-                    $(articleForm).find('.ui.message.error')
-                        .html('<p>Não encontrado</p>')
-                        .show()
-                    $('html, body').animate({scrollTop:0},1000);
-                })
-                .then( () => {
-                    that.innerHTML = 'Buscar'
-                })
+            })
+            .then( function(resp) {
+                 articleForm.content.value = decodeURIComponent(unescape(atob(resp.content)))
+            })
+            .catch( function(err) {
+                $(articleForm).find('.ui.message.error')
+                    .html('<p>Erro.</p>')
+                    .show()
+                $('html, body').animate({scrollTop:0},1000);
+            })
+            .then( function() {
+                that.innerHTML = 'Buscar'
+            })
         })
 
     articleForm.addEventListener('submit', function(event) {

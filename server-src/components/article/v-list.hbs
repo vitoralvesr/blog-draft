@@ -27,20 +27,3 @@
     </div>
     {{/each}}
 </div>
-
-
-<script>
-    var ArticleList = {}
-
-
-    ArticleList.logout = function() {
-        Site.ajaxRequest({method:'GET', url:'/api/user/logout'}).then(() => {
-            window.location.reload()
-        })
-    }
-
-
-    $(function(){
-        $('.ui.menu .ui.dropdown.item').dropdown()
-    })
-</script>

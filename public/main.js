@@ -53,7 +53,7 @@
             _submitting = false
             submitBtn.value = prevValue
         })
-        .catch(err => {
+        .catch( function(err) {
             _submitting = false
             submitBtn.value = prevValue
             let innerp = formEl.querySelector('.ui.message.error > p')
@@ -71,7 +71,10 @@
     exports.submitForm = submitForm
 
 
-    function ajaxRequest( {method, url, body} ) {
+    function ajaxRequest(params) {
+        var method = params.method
+        var url = params.url
+        var body = params.body
         return new Promise((resolve, reject) => {
             body = body || {}
             let req = new XMLHttpRequest()
@@ -79,7 +82,7 @@
             if (typeof body == 'object') {
                 req.setRequestHeader('content-type', 'application/json')
                 req.send(JSON.stringify(body))
-                req.addEventListener('load', () => {
+                req.addEventListener('load', function() {
                     if (req.statusText == 'OK') {
                         try {
                             let parsed = JSON.parse(req.responseText)
@@ -112,11 +115,17 @@
         return $el
     }
 
+    exports.logout = function() {
+        exports.ajaxRequest({method:'GET', url:'/api/user/logout'}).then(() => {
+            window.location.reload()
+        })
+    }
+
     window.Site = exports
 
     $(function() {
-        $('.article-content table').addClass('ui collapsing padded table')
-        $('.article-content code > div.highlight').addClass('ui segment secondary')        
+        $('pre').addClass('ui segment')
+        $('.ui.menu .ui.dropdown.item').dropdown()        
     })
 
 })()

@@ -22,13 +22,27 @@ api.post('/', async (req, res, next) => {
     try {
         global.$checkParams(req.body, 'title', 'source')
         if (req.body.source === 'git')
-            global.$checkParams(req.body, 'githubUser', 'githubRepo', 'githubPath')
+            $checkParams(req.body, 'githubUser', 'githubRepo', 'githubPath')
         var provider = await ArticleProvider.init(req.body)
-        await provider.create(req.body)
+        await provider.create()
         res.status(200).send({ status: 'ok' })
     } catch (err) {
         next(err)
     }    
+})
+
+
+api.post('/github-utf8', async (req, res, next) => {
+    try {
+        var { _content } = $checkParams(req.body, 'content')
+        var utf8 = Buffer.from(_content, 'base64').toString('utf8')
+        var escaped = global['escape'](encodeURIComponent(utf8))
+        //var iso = iconv.decode(Buffer.from(utf8), 'ISO-8859-1')
+        var dest = Buffer.from(escaped).toString('base64')
+        res.status(200).send({ content: dest })
+    } catch (err) {
+        next(err)
+    }
 })
 
 

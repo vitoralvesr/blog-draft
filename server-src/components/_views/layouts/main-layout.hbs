@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
 
     <link rel="stylesheet" href="/assets/semantic.min.css" type="text/css"></link>
-    <link rel="stylesheet" href="/assets/main.css" type="text/css"></link>
-    <link rel="stylesheet" href="/assets/pygments-github.css" type="text/css"></link>    
+    <link rel="stylesheet" href="/assets/main.css" type="text/css"></link>  
+    <link rel="stylesheet" href="/assets/github.css" type="text/css"></link>  
     <script src="/assets/jquery-3.1.1.min.js"></script>
     <script src="/assets/semantic.min.js"></script>
     <script src="/assets/main.js"></script>
@@ -28,14 +28,16 @@
                                 <i class="dropdown icon"></i>
                                 Conta
                                 <div class="left menu">
-                                    <div class="item" onclick="window.location.pathname='/pages/user/password-change'">
+                                    <div
+                                        class="item"
+                                        onclick="window.location.pathname='/pages/user/password-change'">
                                         Alterar senha
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </a>
-                    <a class="item" onclick="ArticleList.logout()">Sair</a>
+                    <a class="item" onclick="Site.logout()">Sair</a>
                 {{else}}
                     <a href="/pages/user/login" class="item">Login</a>
                 {{/if}}

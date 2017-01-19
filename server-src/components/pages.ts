@@ -36,12 +36,8 @@ pages.response = <any>{
 
 //routes
 pages.use(auth.session)
-
-
 pages.use('/article', require('./article/pages'))
 pages.use('/user', require('./user/pages'))
-
-
 pages.get('/', (req, res) => {
     res.redirect(req.originalUrl + '/article/list')
 })

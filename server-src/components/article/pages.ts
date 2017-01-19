@@ -1,14 +1,14 @@
 const auth = global.$rfr('components/auth-mw')
 import express = require('express')
 import marked = require('marked')
-const highlight = require("highlight.js")
+const highlight = global.$rfr("highlight.js")
 const { $promisify } = global
 import { ArticleProvider } from './providers'
 
 marked.setOptions({
     sanitize : true ,
     highlight: function (code) {
-        highlight.highlightAuto(code).value;
+        return highlight.highlightAuto(code).value;
     }
 })
 var pages = express.Router()
