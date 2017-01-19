@@ -1,7 +1,7 @@
 const auth = global.$rfr('components/auth-mw')
 import express = require('express')
 import marked = require('marked')
-const highlight = global.$rfr("highlight.js")
+const highlight = global.$rfr("../server-src/highlight.js")
 const { $promisify } = global
 import { ArticleProvider } from './providers'
 
