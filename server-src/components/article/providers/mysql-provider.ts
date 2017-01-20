@@ -1,5 +1,5 @@
 import { ArticleProvider } from './index'
-const connection = () => global.$connection
+import db = require('@common/database')
 
 export class MysqlProvider extends ArticleProvider {
 
@@ -10,7 +10,7 @@ export class MysqlProvider extends ArticleProvider {
 
     
     async update(article:Article) {
-        return connection().execute(
+        return db.connection.execute(
             'UPDATE articles SET title = ?, content = ? WHERE id = ?',
             [article.title, article.content, article.id]
         )
@@ -20,7 +20,7 @@ export class MysqlProvider extends ArticleProvider {
 
     async create() {
         var d = this._dbData
-        return connection().execute(
+        return db.connection.execute(
             `INSERT INTO
                 articles(source, github_user, github_repo, github_path, title, content)
                 VALUES (? ,?, ?, ?, ?, ?)`,
@@ -37,7 +37,7 @@ export class MysqlProvider extends ArticleProvider {
 
     async delete() {
         if (!this._dbData.id) throw Error('Faltou passar o id.')
-        return connection()
+        return db.connection
             .execute(`DELETE FROM articles WHERE id = ?`, [this._dbData.id])
     }
 

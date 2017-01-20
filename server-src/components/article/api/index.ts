@@ -1,10 +1,7 @@
-const connection = () => global.$connection
 import express = require('express')
-import request = require('request')
-import humps = require('humps')
 const api = express.Router()
 import { ArticleProvider } from '../providers'
-const { $promisify, $checkParams } = global
+const { $checkParams } = global
 
 api.put('/:id?',  async (req, res, next) => {
     try {

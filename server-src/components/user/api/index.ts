@@ -3,7 +3,7 @@ const api = module.exports = require('express').Router()
 import passwordGen = require('password-generator')
 import bcrypt = require('bcrypt')
 import ono = require('ono')
-const connection = () => global.$connection
+import { connection } from '@common/database'
 import auth = require('@common/auth-mw')
 import uuid = require('uuid/v1')
 import mailer = require('@common/mail')
@@ -16,7 +16,7 @@ async function userLogin({ username, password, session }) {
     if (!username || !password) throw ono('Falta o nome de usuário ou senha.')
     if (session.userId) throw ono('Primeiro faça o logout da sessão atual.')
 
-    let [rows] = await connection().execute('SELECT id, hash from `users` WHERE name = ?', [username])
+    let [rows] = await connection.execute('SELECT id, hash from `users` WHERE name = ?', [username])
     if (!rows.length) throw ono({statusCode:401}, 'Credenciais inválidas.')
     let _userId = rows[0].id
     let result = await bcrypt.compare(password, rows[0].hash)
@@ -53,7 +53,7 @@ api.get('/logout', auth.authGate , (req, res, next) => {
 
 
 api.passwordResetConfirm = function(_token) {
-    return connection().execute(
+    return connection.execute(
         'SELECT id, user FROM event_tokens WHERE event = "password-reset-confirm" AND token = ?',
         [ _token ])
     .then(([rows]) => {
@@ -62,9 +62,9 @@ api.passwordResetConfirm = function(_token) {
         var eventId = rows[0].id
         let newpass = passwordGen(12)
         return bcrypt.hash(newpass, 10).then( newHash =>
-            connection().execute('UPDATE users SET hash = ? WHERE id = ? ', [newHash, userId])
+            connection.execute('UPDATE users SET hash = ? WHERE id = ? ', [newHash, userId])
         )
-        .then(() => connection().execute('DELETE FROM event_tokens WHERE id = ?', [eventId]) )
+        .then(() => connection.execute('DELETE FROM event_tokens WHERE id = ?', [eventId]) )
         .then(() => newpass)
     })
 }
@@ -93,7 +93,7 @@ api.post('/password-reset-request', (req, res, next) => {
     let _bytes, _userName, _userId
     Promise.resolve().then(() => {
         $checkParams(req.body, 'email')
-        return connection()
+        return connection
         .execute(
             `SELECT u.id AS userId , u.name AS userName, ev.token AS token
                 FROM 
@@ -107,7 +107,7 @@ api.post('/password-reset-request', (req, res, next) => {
         _userName = rows[0].userName
         _userId = rows[0].userId
         _bytes = uuid()        
-        return connection()
+        return connection
         .execute('INSERT INTO event_tokens(user, event, token) VALUES (?, ?, ?)',
             [_userId, 'password-reset-confirm', _bytes])
     }).then(() => {
@@ -146,7 +146,7 @@ api.post('/create', (req, res, next) => {
         _password = passwordGen(12)
         return bcrypt.hash(_password, 10)
     }).then( hash => {
-        return connection().execute('INSERT into `users` (name, email, hash) VALUES (? , ?, ?)' ,
+        return connection.execute('INSERT into `users` (name, email, hash) VALUES (? , ?, ?)' ,
             [username, email, hash])
     }).then(() => {
         return mailer({ 
@@ -174,7 +174,7 @@ api.post('/password-change', auth.authGate, (req, res, next) => {
     Promise.resolve().then(()=>{
         $checkParams(b, 'currentPassword', 'newPassword', 'newPasswordConfirm')
         if (b.newPassword !== b.newPasswordConfirm) throw Error('As novas senhas devem bater.')
-        return connection().execute('SELECT hash from users WHERE id = ?', [req.session.userId])            
+        return connection.execute('SELECT hash from users WHERE id = ?', [req.session.userId])            
     })
     .then( ([rows])  => {
         if (!rows.length) throw Error('Erro Inesperado!')
@@ -185,7 +185,7 @@ api.post('/password-change', auth.authGate, (req, res, next) => {
         return bcrypt.hash(b.newPassword, 10)
     })
     .then( hashed => {
-        return connection().execute('UPDATE users SET hash = ? WHERE id = ?',
+        return connection.execute('UPDATE users SET hash = ? WHERE id = ?',
             [hashed, req.session.userId])
     })
     .then( () => {

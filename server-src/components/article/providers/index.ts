@@ -1,5 +1,4 @@
-const connection = () => global.$connection
-import _mysqlp = require('./mysql-provider')
+import db = require('@common/database')
 
 
 export abstract class ArticleProvider {
@@ -14,7 +13,7 @@ export abstract class ArticleProvider {
     : Promise<T> {
         if (typeof idOrArticle === 'object') return end(idOrArticle)
         
-        var [rows] = await connection()
+        var [rows] = await db.connection
             .execute('SELECT * FROM articles WHERE ID = ?', [idOrArticle])
         if (!rows.length) throw Error('Artigo não encontrado.')
         return end(rows[0])
@@ -28,7 +27,7 @@ export abstract class ArticleProvider {
     
 
     static async list() : Promise<Article[]> {
-        var [rows] = await connection().execute('SELECT * FROM articles')
+        var [rows] = await db.connection.execute('SELECT * FROM articles')
         var all = rows.map(async row => {
             var provider = await ArticleProvider.init(row)
             return await provider.get()

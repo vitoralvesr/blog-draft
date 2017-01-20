@@ -48,7 +48,7 @@ async function mailgun({ email, subject, content }) {
     var domain = process.env.APP_EMAIL_MAILGUN_DOMAIN
     var from = process.env.APP_EMAIL_FROMADDR
     var html = await $promisify( marked, content )
-    var [stream, body] = await $promisify(request, {
+    var [, body] = await $promisify(request, {
         auth: {
             user: 'api',
             pass: process.env.APP_EMAIL_MAILGUN_KEY

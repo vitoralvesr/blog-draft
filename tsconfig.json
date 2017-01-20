@@ -8,7 +8,8 @@
         "baseUrl": "./server-src",
         "paths" : {
             "@common/*" : ["common/*"]
-        }
+        } ,
+        "noUnusedLocals": true
     } ,
     "include" : [
         "./server-src/**/*.ts"
