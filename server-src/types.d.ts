@@ -4,8 +4,6 @@ declare module NodeJS {
         $checkParams
         $log
         $promisify
-        $connection
-        $legacyConnection
     }
 }
 

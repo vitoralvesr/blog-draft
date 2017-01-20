@@ -2,7 +2,7 @@ import expressSession = require('express-session')
 import _mysqlStore = require('express-mysql-session')
 const mysqlStore = _mysqlStore(expressSession)
 import ono = require('ono')
-
+import db = require('@common/database')
 
 export var session = expressSession({
     secret: 'unusualSecret' ,
@@ -11,7 +11,7 @@ export var session = expressSession({
     },
     resave : true ,
     saveUninitialized : true ,
-    store : new mysqlStore({}, global.$legacyConnection)
+    store : new mysqlStore({}, db.legacyConnection)
 })
 
 

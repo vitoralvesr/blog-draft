@@ -1,6 +1,7 @@
 import express = require('express')
 const app = express()
 import ono = require('ono')
+import database = require('./common/database')
 
 var Module = require('module');
 var originalRequire = Module.prototype.require;
@@ -55,20 +56,7 @@ global.$promisify = function( fn, ...args ) {
 }
 
 
-const mysql = require('mysql2/promise')
-const mysqlLegacy = require('mysql2')
-const connectionParams = {
-    host : 'localhost' || process.env.APP_DB_HOST ,
-    user : 'root' || process.env.APP_DB_USER ,
-    database : 'test' || process.env.APP_DB_DB ,
-    password : '' || process.env.APP_DB_PASS    
-}
-mysql.createConnection(connectionParams).then( connection => {
-    global.$connection = connection
-    //fix: create a promiseless mysql connection for the session lib
-    return mysqlLegacy.createConnection(connectionParams)
-}).then( legacyConnection => {
-    global.$legacyConnection = legacyConnection
+database.init().then(() => {
 
     app.use('/assets',
         express.static('../public', process.env.NODE_ENV === 'production' ? 
