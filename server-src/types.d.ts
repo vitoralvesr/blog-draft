@@ -1,6 +1,5 @@
 declare module NodeJS {
     interface Global {
-        $rfr
         $debugMw
         $checkParams
         $log

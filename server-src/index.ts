@@ -1,8 +1,16 @@
 import express = require('express')
 const app = express()
 import ono = require('ono')
-global.$rfr = require('rfr')
-global.$rfr.setRoot(__dirname)
+
+var Module = require('module');
+var originalRequire = Module.prototype.require;
+
+Module.prototype.require = function(...args){
+    let path = args[0]
+    if (path.charAt(0) === '@') path = process.cwd() + '/' + path.substr(1)
+    args[0] = path
+    return originalRequire.apply(this, args);
+};
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 

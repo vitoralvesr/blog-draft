@@ -4,7 +4,11 @@
         "target" : "es6" ,
         "outDir" : "./server-dist" ,
         "sourceMap": true ,
-        "strictNullChecks": true
+        "strictNullChecks": true ,
+        "baseUrl": "./server-src",
+        "paths" : {
+            "@common/*" : ["common/*"]
+        }
     } ,
     "include" : [
         "./server-src/**/*.ts"

@@ -1,6 +1,6 @@
 const pages = require('express').Router()
 const api = require('./api')
-const authMw = global.$rfr('components/auth-mw')
+import authMw = require('@common/auth-mw')
 
 pages.get('/login', (req, res) => {
     res.render('v-login')

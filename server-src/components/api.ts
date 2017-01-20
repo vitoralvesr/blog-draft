@@ -1,5 +1,5 @@
 import bodyParser = require('body-parser')
-const auth = global.$rfr('components/auth-mw')
+import auth = require('@common/auth-mw')
 import express = require('express')
 const api = express.Router()
 

@@ -1,4 +1,4 @@
-import auth = require('./auth-mw')
+import auth = require('@common/auth-mw')
 import express = require('express')
 const pages = express()
 

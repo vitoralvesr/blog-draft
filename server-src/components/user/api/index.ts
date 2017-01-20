@@ -4,10 +4,9 @@ import passwordGen = require('password-generator')
 import bcrypt = require('bcrypt')
 import ono = require('ono')
 const connection = () => global.$connection
-const auth = global.$rfr('components/auth-mw')
+import auth = require('@common/auth-mw')
 import uuid = require('uuid/v1')
-import _utils = require('./mail')
-const _mailer = _utils.mailer
+import mailer = require('@common/mail')
 const { $checkParams } = global
 
 /**
@@ -112,7 +111,7 @@ api.post('/password-reset-request', (req, res, next) => {
         .execute('INSERT INTO event_tokens(user, event, token) VALUES (?, ?, ?)',
             [_userId, 'password-reset-confirm', _bytes])
     }).then(() => {
-        return _mailer({
+        return mailer({
             email : req.body.email ,
             subject : 'Redefinição de senha' ,
             content : PWD_RESET_CONTENT(_userName, _bytes)
@@ -150,7 +149,7 @@ api.post('/create', (req, res, next) => {
         return connection().execute('INSERT into `users` (name, email, hash) VALUES (? , ?, ?)' ,
             [username, email, hash])
     }).then(() => {
-        return _mailer({ 
+        return mailer({ 
             email, 
             subject : 'Nova conta' ,
             content : `Essas são suas credenciais:\nNome de usuário: ${username}\nSenha: ${_password}`
