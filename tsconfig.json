@@ -4,7 +4,7 @@
         "target" : "es6" ,
         "outDir" : "./server-dist" ,
         "sourceMap": true ,
-        "strictNullChecks": true ,
+        "strictNullChecks": false ,
         "baseUrl": "./server-src",
         "paths" : {
             "@common/*" : ["common/*"]

@@ -1,4 +1,3 @@
-<h1>{{title}}</h1>
 <style scoped>
     .article-heading > h3 {
         display: inline-block;
@@ -6,24 +5,70 @@
     .article-heading > .buttons {
         float: right;
     }
+    .fixed.menu {
+        visibility: hidden;
+    }
+    .mhead.segment {
+        min-height: 300px;
+    }
+    .mhead .ui.header {
+        margin-top: 1em;
+        font-size: 4em;
+    }
+
+    @media only screen and (max-width:700px) {
+        .mhead.segment {
+            min-height: 200px;
+        }
+        .mhead .ui.header {
+            margin-top: 0.5em;
+            font-size: 3em;
+        }        
+    }
 </style>
+
+<script>
+    $(function(){
+        var $fixedMenu = $('.fixed.menu')
+        $('.mhead').visibility({
+            once : false ,
+            onBottomPassed: function() {
+                $fixedMenu.transition('fade in')
+            } ,
+            onBottomPassedReverse: function() {
+                $fixedMenu.transition('fade out')
+            }
+        })
+    })
+</script>
+
+<div class="ui inverted vertical center aligned segment mhead">
+    <div class="ui text container">
+        <h1 class="ui inverted header">
+            Blog
+        </h1>
+        <h2>Subtítulo</h2>
+    </div>
+</div>
 
 <div>
     {{#each itens}}
-    <div class="ui segment">
-        <div class="article-heading">
-            <h3 class="ui header">{{title}}</h3>
-            <div class="buttons">
-                {{#if @root.$online}}
-                <a href="/pages/article/{{id}}/edit">
-                    <div class="ui icon button">
-                        <i class="edit icon"></i>
-                    </div>
-                </a>
-                {{/if}}
-            </div>            
+    <div class="ui vertical segment">
+        <div class="ui text container">
+            <div class="article-heading">
+                <h1 class="ui header">{{title}}</h1>
+                <div class="buttons">
+                    {{#if @root.$online}}
+                    <a href="/pages/article/{{id}}/edit">
+                        <div class="ui icon button">
+                            <i class="edit icon"></i>
+                        </div>
+                    </a>
+                    {{/if}}
+                </div>            
+            </div>
+            <div class="article-content">{{{content}}}</div>
         </div>
-        <div class="article-content">{{{content}}}</div>
     </div>
     {{/each}}
 </div>

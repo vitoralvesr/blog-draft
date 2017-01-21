@@ -1,9 +1,11 @@
+declare var $debugMw
+declare var $checkParams
+declare var $log
+declare var $promisify
+
+
 declare module NodeJS {
     interface Global {
-        $debugMw
-        $checkParams
-        $log
-        $promisify
     }
 }
 
@@ -26,7 +28,15 @@ type Article = {
     title,
     content,
     source: 'mysql' | 'git'
+    user
     githubUser?
     githubRepo?
     githubPath?
+}
+
+
+declare namespace MySql {
+    export interface Connection {
+        execute(query:string, params?:(string|number)[])
+    }
 }

@@ -22,10 +22,10 @@ export class MysqlProvider extends ArticleProvider {
         var d = this._dbData
         return db.connection.execute(
             `INSERT INTO
-                articles(source, github_user, github_repo, github_path, title, content)
-                VALUES (? ,?, ?, ?, ?, ?)`,
+                articles(source, github_user, github_repo, github_path, title, content, user)
+                VALUES (? ,?, ?, ?, ?, ?, ?)`,
             [d.source, d.githubUser || '', d.githubRepo || '', d.githubPath || '', d.title,
-                d.content]
+                d.content, d.user]
         )
     }
 

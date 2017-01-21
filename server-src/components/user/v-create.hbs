@@ -15,6 +15,15 @@
         <p></p>
     </div>
 
+    {{#if message}}
+    <div class="ui message">
+        <div class="header">
+            {{message.title}}
+        </div>
+        <p>{{message.content}}</p>
+    </div>
+    {{/if}}
+
     <div class="field">
         <label>Nome de Usuário</label>
         <input type="text" name="username" data-validate="empty"/>
@@ -25,7 +34,7 @@
     </div>
 
     <input type="submit" class="ui button primary" value="OK"></input>
-    <button class="ui button cancel-button">Cancelar</button>
+    <a class="ui button" href="/pages/user/login">Cancelar</a>
 
 </form>
 

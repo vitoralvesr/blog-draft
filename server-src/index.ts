@@ -1,7 +1,4 @@
-import express = require('express')
-const app = express()
-import ono = require('ono')
-import database = require('./common/database')
+// ---- module shim for custom paths
 
 var Module = require('module');
 var originalRequire = Module.prototype.require;
@@ -13,22 +10,32 @@ Module.prototype.require = function(...args){
     return originalRequire.apply(this, args);
 };
 
+// ---- end module shim
+
+import express = require('express')
+const app = express()
+import ono = require('ono')
+import database = require('./common/database')
+import roles = require('./common/roles')
+import config = require('./common/config')
+import '@common/mail' //init
+
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-global.$debugMw = (msg) => (req, res, next) => {
+global['$debugMw'] = (msg) => (req, res, next) => {
     console.log('DEBUGMW layer route', this.route, msg||'')
     next()
 }
 
 
 //replace with a logger in the future
-global.$log = console.log
+global['$log'] = console.log
 
 
 /**
  * Shorthand for checking parameters, adds underline for convention
  */
-global.$checkParams = function(obj, ...params) {
+global['$checkParams'] = function(obj, ...params) {
     let out = {}
     out = params.reduce( (previous, param) => {
         if (obj[param] === undefined) {
@@ -46,7 +53,7 @@ global.$checkParams = function(obj, ...params) {
 
 
 //tomelhe global. TODO arrumar essa zona
-global.$promisify = function( fn, ...args ) {
+global['$promisify'] = function( fn, ...args ) {
     return new Promise( (resolve, reject) => {
         fn( ...args , (err, ...result) => {
             if (err) return reject(err)
@@ -57,6 +64,11 @@ global.$promisify = function( fn, ...args ) {
 
 
 database.init().then(() => {
+    return Promise.all([
+        roles.init(),
+        config.init(),
+    ])
+}).then(() => {
 
     app.use('/assets',
         express.static('../public', process.env.NODE_ENV === 'production' ? 
@@ -67,9 +79,10 @@ database.init().then(() => {
     
     app.use('/pages', require('./components/pages'))
     app.use('/api', require('./components/api'))
-    app.get('/', (req, res) => {
-        res.redirect('/pages/article/list')
-    })
+    app.get('/', (req, res) => res.redirect('/pages/article/list'))
+    app.get('/login', (req, res) => res.redirect('/pages/user/login'))
+    app.get('/admin', (req, res) => res.redirect('/pages/user/login'))
+
 
     //404 handler
     app.use( (req, res) => {
@@ -82,7 +95,7 @@ database.init().then(() => {
     let HTTP_PORT = process.env.APP_HTTP_PORT || 8020
     app.listen( HTTP_PORT , () => console.log('HTTP Server up at ' + HTTP_PORT) )    
 }).catch( err => {
-    console.error('Error when connection to mysql')
+    console.error('Error when starting the server.')
     console.error(err)
     throw err
 })

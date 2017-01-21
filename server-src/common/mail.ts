@@ -1,9 +1,8 @@
 import nodemailer = require('nodemailer')
 import marked = require('marked')
 import request = require('request')
-const { $promisify } = global
 
-let METHOD : string = process.env.APP_EMAIL.METHOD || ''
+let METHOD : string = process.env.APP_EMAIL_METHOD || ''
 METHOD = String(METHOD).toUpperCase()
 
 // init
@@ -21,7 +20,8 @@ if (METHOD === 'SMTP') {
 } else if (METHOD === 'MAILGUN') {
     var domain = process.env.APP_EMAIL_MAILGUN_DOMAIN
     var from = process.env.APP_EMAIL_FROMADDR
-    if (!domain || !from) throw Error('Missing mailgun config env vars.')    
+    var key = process.env.APP_EMAIL_MAILGUN_KEY
+    if (!domain || !from || !key) throw Error('Missing mailgun config env vars.')    
     __choose = mailgun
 } else {
     throw Error('Must specify an email method through APP_EMAIL_METHOD.')    
@@ -43,25 +43,28 @@ function smtp({ email, subject, content }) {
     })
 }
 
-
 async function mailgun({ email, subject, content }) {
     var domain = process.env.APP_EMAIL_MAILGUN_DOMAIN
     var from = process.env.APP_EMAIL_FROMADDR
-    var html = await $promisify( marked, content )
-    var [, body] = await $promisify(request, {
+    var [html] = await $promisify( marked, content )
+    var [response, body] = await $promisify(request, {
+        method: 'POST' ,
         auth: {
             user: 'api',
             pass: process.env.APP_EMAIL_MAILGUN_KEY
         },
         url: `https://api.mailgun.net/v3/${domain}/messages`,
-        json: {
+        form: {
             from,
             to: email,
             subject,
             text: content,
-            html
+            html : '<html>' + html + '</html>'
         }
     })
+    if (String(response.statusCode).charAt(0) !== '2') {
+        throw Error('Falha ao enviar email.')
+    }
     return body
 }
 

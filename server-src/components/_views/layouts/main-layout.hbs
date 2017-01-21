@@ -12,9 +12,9 @@
     <script src="/assets/main.js"></script>
 </head>
 <body>
-    <div id="main-wrap">
-
-        <div class="ui top fixed mini menu">
+    <div class="pusher">
+        {{#if $online}}
+        <div class="ui top fixed menu transition">
             <div class="right menu">
                 {{#if $online}}
                     <a class="ui item" href="/pages/article/new">
@@ -43,6 +43,7 @@
                 {{/if}}
             </div>
         </div>
+        {{/if}}
 
         {{{body}}}
     </div>

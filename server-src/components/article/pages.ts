@@ -2,7 +2,6 @@ import auth = require('@common/auth-mw')
 import express = require('express')
 import marked = require('marked')
 const highlight = require( process.cwd() + "/../server-src/highlight.js")
-const { $promisify } = global
 import { ArticleProvider } from './providers'
 
 marked.setOptions({

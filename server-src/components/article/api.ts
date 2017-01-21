@@ -1,11 +1,10 @@
 import express = require('express')
 const api = express.Router()
-import { ArticleProvider } from '../providers'
-const { $checkParams } = global
+import { ArticleProvider } from './providers'
 
 api.put('/:id?',  async (req, res, next) => {
     try {
-        global.$checkParams(req.body, 'id')
+        $checkParams(req.body, 'id')
         var provider = await ArticleProvider.init(req.body.id)
         await provider.update(req.body)
         res.status(200).send({ status: 'ok' })
@@ -17,9 +16,10 @@ api.put('/:id?',  async (req, res, next) => {
 
 api.post('/', async (req, res, next) => {
     try {
-        global.$checkParams(req.body, 'title', 'source')
+        $checkParams(req.body, 'title', 'source')
         if (req.body.source === 'git')
             $checkParams(req.body, 'githubUser', 'githubRepo', 'githubPath')
+        req.body.user = Number(req.session.userId)
         var provider = await ArticleProvider.init(req.body)
         await provider.create()
         res.status(200).send({ status: 'ok' })

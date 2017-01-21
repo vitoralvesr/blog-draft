@@ -1,4 +1,6 @@
-const api = module.exports = require('express').Router()
+import express = require('express')
+const api = express.Router()
+export = api
 
 import passwordGen = require('password-generator')
 import bcrypt = require('bcrypt')
@@ -7,7 +9,7 @@ import { connection } from '@common/database'
 import auth = require('@common/auth-mw')
 import uuid = require('uuid/v1')
 import mailer = require('@common/mail')
-const { $checkParams } = global
+import roles = require('@common/roles')
 
 /**
  * Serviço de autenticação
@@ -52,7 +54,8 @@ api.get('/logout', auth.authGate , (req, res, next) => {
 })
 
 
-api.passwordResetConfirm = function(_token) {
+api['passwordResetConfirm'] = passwordResetConfirm
+function passwordResetConfirm(_token) {
     return connection.execute(
         'SELECT id, user FROM event_tokens WHERE event = "password-reset-confirm" AND token = ?',
         [ _token ])
@@ -76,7 +79,7 @@ api.passwordResetConfirm = function(_token) {
 api.post('/password-reset-confirm', (req, res, next) => {
     Promise.resolve($checkParams(req.body, 'token'))
     .then(({_token}) => {
-        return api.passwordResetConfirm(_token)
+        return passwordResetConfirm(_token)
     }).then(newpass => {
         res.status(200).send({ password : newpass })
     })
@@ -138,34 +141,36 @@ para redefinir a sua senha.`
 /**
  * Criar usuário
  */
-api.post('/create', (req, res, next) => {
-    let { username, email } = req.body    
-    var _password
-    Promise.resolve().then(() => {
+api.post('/create', async (req, res, next) => {
+    try {
+        let { username, email } = req.body
+        var _password
         if (!username || !email) throw ono('Falta o nome de usuário ou o email.')
         _password = passwordGen(12)
-        return bcrypt.hash(_password, 10)
-    }).then( hash => {
-        return connection.execute('INSERT into `users` (name, email, hash) VALUES (? , ?, ?)' ,
-            [username, email, hash])
-    }).then(() => {
-        return mailer({ 
-            email, 
-            subject : 'Nova conta' ,
-            content : `Essas são suas credenciais:\nNome de usuário: ${username}\nSenha: ${_password}`
+        var hash = await bcrypt.hash(_password, 10)
+        //TODO: multiple editors
+        if (roles.USER_ADMIN_ID !== undefined) throw Error('Não é possível adicionar um novo editor.')
+        var setRole = roles.USER_ADMIN_ID === undefined ? roles.ROLE_ADMIN_ID : roles.ROLE_NEW_ID
+        await connection.execute('INSERT into `users` (name, email, hash, role) VALUES (? , ?, ?, ?)',
+                [username, email, hash, setRole])
+        await mailer({
+            email,
+            subject: 'Nova conta',
+            content:
+`Olá! Essas são suas credenciais:  
+**Nome de usuário**: ${username}  
+**Senha:** ${_password}`
         })
-    }).then(() => {
-        return userLogin({
-            username ,
-            password : _password ,
-            session : req.session
-        })
-    }).then( loginResp => {
-        res.status(200).send(loginResp||{status:'ok'})
-    }).catch( err => {
-        if (err.code === 'ER_DUP_ENTRY') throw ono(err, 'Já existe um ')
-        throw err
-    }).catch(next)
+        //let loginResp = await userLogin({
+        //    username,
+        //    password: _password,
+        //    session: req.session
+        //})
+        res.status(200).send({ status: 'ok' })
+    } catch (err) {
+        if (err.code === 'ER_DUP_ENTRY') return next(ono(err, 'Já existe um '))
+        next(err)
+    }
 })
 
 
