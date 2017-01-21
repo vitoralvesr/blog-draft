@@ -2,11 +2,12 @@
   "name": "chat-example",
   "version": "0.0.0",
   "description": "",
-  "main": "server-src/index.js",
+  "main": "server-dist/index.js",
   "repository": "",
   "author": "",
   "scripts": {
-    "livereload": "livereload ./server-src -d -e \"hbs\""
+    "livereload": "livereload ./server-src -d -e \"hbs\"" ,
+    "tsc": "tsc"
   },
   "dependencies": {
     "bcrypt": "^1.0.2",
@@ -16,16 +17,13 @@
     "express-mysql-session": "^1.2.0",
     "express-session": "^1.14.2",
     "highlight.js": "git+https://github.com/isagalaev/highlight.js.git",
-    "humps": "git+https://github.com/domchristie/humps.git#v2.0.0",
     "lodash": "^4.17.4",
     "marked": "^0.3.6",
     "mysql2": "^1.1.2",
     "nodemailer": "^2.7.0",
     "ono": "^2.2.1",
     "password-generator": "^2.1.0",
-    "request": "^2.79.0",
-    "rfr": "^1.2.3",
-    "uuid": "^3.0.1"
+    "request": "^2.79.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^1.0.0",

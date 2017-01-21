@@ -151,8 +151,8 @@ api.post('/create', async (req, res, next) => {
         //TODO: multiple editors
         if (roles.USER_ADMIN_ID !== undefined) throw Error('Não é possível adicionar um novo editor.')
         var setRole = roles.USER_ADMIN_ID === undefined ? roles.ROLE_ADMIN_ID : roles.ROLE_NEW_ID
-        await connection.execute('INSERT into `users` (name, email, hash, role) VALUES (? , ?, ?, ?)',
-                [username, email, hash, setRole])
+        await connection.execute('INSERT into `users` (name, display_name, email, hash, role) VALUES (? , ?, ?, ?)',
+                [username, username, email, hash, setRole])
         await mailer({
             email,
             subject: 'Nova conta',

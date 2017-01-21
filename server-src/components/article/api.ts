@@ -1,12 +1,17 @@
 import express = require('express')
 const api = express.Router()
-import { ArticleProvider } from './providers'
+import { connection as db, fixObject } from '@common/database'
+//import { ArticleProvider } from './providers'
 
 api.put('/:id?',  async (req, res, next) => {
     try {
         $checkParams(req.body, 'id')
-        var provider = await ArticleProvider.init(req.body.id)
-        await provider.update(req.body)
+        //var provider = await ArticleProvider.init(req.body.id)
+        //await provider.update(req.body)
+        await db.execute(
+            'UPDATE articles SET title = :title, content = :content WHERE id = :id',
+            req.body
+        )
         res.status(200).send({ status: 'ok' })
     } catch (err) {
         next(err) 
@@ -20,8 +25,11 @@ api.post('/', async (req, res, next) => {
         if (req.body.source === 'git')
             $checkParams(req.body, 'githubUser', 'githubRepo', 'githubPath')
         req.body.user = Number(req.session.userId)
-        var provider = await ArticleProvider.init(req.body)
-        await provider.create()
+        await db.execute(`INSERT INTO
+                articles(source, github_user, github_repo, github_path, title, content, user)
+                VALUES (:source ,:githubUser, :githubRepo, :githubPath, :title, :content, :user)`,
+            fixObject(req.body)
+        )
         res.status(200).send({ status: 'ok' })
     } catch (err) {
         next(err)
@@ -46,8 +54,7 @@ api.post('/github-utf8', async (req, res, next) => {
 api.delete('/:id', async (req, res, next) => {
     try {
         $checkParams(req.params, 'id')
-        var provider = await ArticleProvider.init(req.params.id)
-        await provider.delete()
+        db.execute('DELETE FROM article WHERE id = ?', [req.params.id])
         res.status(200).send({status : 'OK'})
     } catch (err) {
         next(err)

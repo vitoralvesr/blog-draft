@@ -2,7 +2,7 @@ import auth = require('@common/auth-mw')
 import express = require('express')
 import marked = require('marked')
 const highlight = require( process.cwd() + "/../server-src/highlight.js")
-import { ArticleProvider } from './providers'
+import { connection as db } from '@common/database'
 
 marked.setOptions({
     sanitize : true ,
@@ -15,7 +15,9 @@ var pages = express.Router()
 
 pages.get('/list', async (req, res, next) => {
     try {
-        var rows = await ArticleProvider.list()
+        let [rows] = await db.execute(`SELECT articles.*, users.display_name
+            FROM articles LEFT JOIN users ON articles.user = users.id`
+        )
         var all = rows.map(async row => {
             var content = await $promisify( marked, row.content )
             row.content = content
@@ -40,8 +42,11 @@ pages.get('/new', auth.authGate, async (req, res, next) => {
 pages.get('/:pageId/edit', auth.authGate, async (req, res, next) => {
     try {
         if (!req.params.pageId) throw Error('Página não informada.')
-        var provider = await ArticleProvider.init(req.params.pageId)
-        let article = await provider.get()
+        let [rows] = db.execute(
+            'SELECT * FROM article WHERE id = ? LIMIT 1',
+            [req.params.pageId])
+        if (!rows.length) throw Error('Artigo não existe.')
+        let article = rows[0]
         res.render('v-edit', { 
             title: 'Editando artigo' ,
             article

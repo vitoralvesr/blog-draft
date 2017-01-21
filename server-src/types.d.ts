@@ -37,6 +37,6 @@ type Article = {
 
 declare namespace MySql {
     export interface Connection {
-        execute(query:string, params?:(string|number)[])
+        execute(query:string, params?:any)
     }
 }
