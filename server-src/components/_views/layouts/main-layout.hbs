@@ -1,5 +1,11 @@
 <html>
 <head>
+    {{#if $development}}
+    <script>
+        document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')
+    </script>
+    {{/if}}
+
     <title>{{title}}</title>
 
     <meta charset="UTF-8">
@@ -14,34 +20,8 @@
 <body>
     <div class="pusher">
         {{#if $online}}
-        <div class="ui top fixed menu transition">
-            <div class="right menu">
-                {{#if $online}}
-                    <a class="ui item" href="/pages/article/new">
-                        Novo post
-                    </a>
-                    <a class="ui dropdown item">
-                        {{$userName}}
-                        <i class="dropdown icon"></i>
-                        <div class="menu">
-                            <div class="ui dropdown item">
-                                <i class="dropdown icon"></i>
-                                Conta
-                                <div class="left menu">
-                                    <div
-                                        class="item"
-                                        onclick="window.location.pathname='/pages/user/password-change'">
-                                        Alterar senha
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                    <a class="item" onclick="Site.logout()">Sair</a>
-                {{else}}
-                    <a href="/pages/user/login" class="item">Login</a>
-                {{/if}}
-            </div>
+        <div class="ui top fixed hidden menu">
+            {{> top-menu}}
         </div>
         {{/if}}
 

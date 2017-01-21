@@ -1,5 +1,9 @@
 # Configurable environment variables
 
+## App
+
+    APP_BASE_URL
+
 ## Email
 
     APP_EMAIL_FROMADDR  

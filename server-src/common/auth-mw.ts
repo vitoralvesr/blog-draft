@@ -16,10 +16,6 @@ export var session = expressSession({
 
 
 export var authGate = (req, res, next) => {
-    console.log('authgate')
-    if (req.session.userId) {
-        console.log('authorized')
-        return next()
-    }
+    if (req.session.userId) return next()
     return next(ono({statusCode:400, code:'UNAUTHORIZED'}, 'Não autorizado.'))
 }

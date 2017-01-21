@@ -1,0 +1,28 @@
+{{#if @root.$online}}
+<div class="ui container">
+    <div class="right menu">
+        <a class="ui item" href="/pages/article/new">
+            <i class="write square icon"></i>
+            Novo post
+        </a>
+        <a class="ui dropdown item">
+            {{$userName}}
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <div class="ui dropdown item">
+                    <i class="dropdown icon"></i>
+                    Conta
+                    <div class="left menu">
+                        <div
+                            class="item"
+                            onclick="window.location.pathname='/pages/user/password-change'">
+                            Alterar senha
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a class="item" onclick="Site.logout()">Sair</a>
+    </div>
+</div>
+{{/if}}

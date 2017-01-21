@@ -1,3 +1,8 @@
+/**
+ * Esse esquema de provider é que eu estava pensando na possibilidade de ter diferentes fontes
+ * para um artigo. Logo desisti da idéia, mas o código continua aí pq não preciso realmente refatorar.
+ */
+
 import db = require('@common/database')
 
 
@@ -27,7 +32,7 @@ export abstract class ArticleProvider {
     
 
     static async list() : Promise<Article[]> {
-        var [rows] = await db.connection.execute('SELECT * FROM articles')
+        var [rows] = await db.connection.execute('SELECT * FROM articles ORDER BY created DESC')
         var all = rows.map(async row => {
             var provider = await ArticleProvider.init(row)
             return await provider.get()

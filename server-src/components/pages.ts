@@ -3,11 +3,12 @@ import express = require('express')
 const pages = express()
 
 //handlebars setup
-const ehbs = require('express-handlebars')
+import ehbs = require('express-handlebars')
 pages.engine('.hbs', ehbs({
     extname: '.hbs' ,
     defaultLayout : 'main-layout' ,
-    layoutsDir : '../server-src/components/_views/layouts'
+    layoutsDir: '../server-src/components/_views/layouts',
+    partialsDir: '../server-src/components/_views/partials'
 }));
 pages.set('view engine', '.hbs')
 pages.set('views', '../server-src/components')
@@ -22,7 +23,8 @@ pages.response = <any>{
     render(this: express.Response, path, data = {}, ...params) {
         let extendedParams = Object.assign(data, {
             $online : this.req.session.userId !== undefined ,
-            $userName : this.req.session.userName
+            $userName: this.req.session.userName,
+            $development: process.env.NODE_ENV !== 'production'
         })
         let url = this.req.originalUrl.split('/').slice(1)
         if (path.charAt(0) === '@')

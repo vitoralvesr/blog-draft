@@ -5,6 +5,9 @@
   "main": "server-src/index.js",
   "repository": "",
   "author": "",
+  "scripts": {
+    "livereload": "livereload ./server-src -d -e \"hbs\""
+  },
   "dependencies": {
     "bcrypt": "^1.0.2",
     "body-parser": "^1.15.2",
@@ -27,6 +30,7 @@
   "devDependencies": {
     "@types/bcrypt": "^1.0.0",
     "@types/express": "^4.0.35",
+    "@types/express-handlebars": "0.0.29",
     "@types/express-session": "0.0.32",
     "@types/node": "^7.0.0",
     "@types/request": "0.0.39",
