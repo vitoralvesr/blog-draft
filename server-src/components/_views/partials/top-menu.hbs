@@ -1,5 +1,11 @@
 {{#if @root.$online}}
 <div class="ui container">
+    {{#unless @root.$atRoot}}
+        <a class="ui item" href="/">
+            <i class="home icon"></i>
+            Início
+        </a>
+    {{/unless}}
     <div class="right menu">
         <a class="ui item" href="/pages/article/new">
             <i class="write square icon"></i>

@@ -1,38 +1,42 @@
-<h1>Login</h1>
+<div class="ui container">
 
-<form class="ui form"
-    name="loginForm"
-    data-url="/api/user/login"
-    data-method="POST"
-    data-redirect-to="/"
-    onSubmit="Site.submitForm(this)">
+    <h1>Login</h1>
 
-    <div class="ui message error">
-        <i class="close icon"></i>
-        <div class="header">
-            Erro.
+    <form class="ui form"
+        name="loginForm"
+        data-url="/api/user/login"
+        data-method="POST"
+        data-redirect-to="/"
+        onSubmit="Site.submitForm(this)">
+
+        <div class="ui message error">
+            <i class="close icon"></i>
+            <div class="header">
+                Erro.
+            </div>
+            <p></p>
         </div>
-        <p></p>
-    </div>
 
-    <div class="two fields">
-        <div class="field">
-            <label>Usuário</label>
-            <input type="text" name="username"/>
+        <div class="two fields">
+            <div class="field">
+                <label>Usuário</label>
+                <input type="text" name="username"/>
+            </div>
+            <div class="field">
+                <label>Senha</label>
+                <input type="password" name="password">
+            </div>
         </div>
-        <div class="field">
-            <label>Senha</label>
-            <input type="password" name="password">
+
+        <div>
+            <input type="submit" class="ui button primary" value="OK"></input>
+            <a href="/pages/articles" class="ui button">Cancelar</button>
+            <a href="/pages/user/password-reset-request" class="ui button basic right floated">Esqueci a senha</a>
+            {{#if showNewAccount}}
+            <a href="/pages/user/create" class="ui button basic right floated">Nova conta</a>
+            {{/if}}
         </div>
-    </div>
 
-    <div>
-        <input type="submit" class="ui button primary" value="OK"></input>
-        <a href="/pages/articles" class="ui button">Cancelar</button>
-        <a href="/pages/user/password-reset-request" class="ui button basic right floated">Esqueci a senha</a>
-        {{#if showNewAccount}}
-        <a href="/pages/user/create" class="ui button basic right floated">Nova conta</a>
-        {{/if}}
-    </div>
+    </form> 
 
-</form>
+</div>

@@ -24,7 +24,7 @@ pages.response = <any>{
         let extendedParams = Object.assign(data, {
             $online : this.req.session.userId !== undefined ,
             $userName: this.req.session.userName,
-            $development: process.env.NODE_ENV !== 'production'
+            $liveReload: process.env.APP_LIVERELOAD > 0
         })
         let url = this.req.originalUrl.split('/').slice(1)
         if (path.charAt(0) === '@')
@@ -40,6 +40,7 @@ pages.response = <any>{
 pages.use(auth.session)
 pages.use('/article', require('./article/pages'))
 pages.use('/user', require('./user/pages'))
+pages.use('/admin', require('./admin/pages'))
 pages.get('/', (req, res) => {
     res.redirect(req.originalUrl + '/article/list')
 })

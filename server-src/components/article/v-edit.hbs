@@ -1,42 +1,46 @@
-<h1>{{title}}</h1>
+<div class="ui container">
 
-<form
-    class="ui form" 
-    name="articleForm"
-    data-url="/api/article/{{article.id}}"
-    data-method="PUT"
-    data-redirect-to="/"
-    onSubmit="Site.submitForm(this)">
+    <h1>{{title}}</h1>
 
-    <div class="ui message error">
-        <i class="close icon"></i>
-        <div class="header">
-            Erro.
+    <form
+        class="ui form" 
+        name="articleForm"
+        data-url="/api/article/{{article.id}}"
+        data-method="PUT"
+        data-redirect-to="/"
+        onSubmit="Site.submitForm(this)">
+
+        <div class="ui message error">
+            <i class="close icon"></i>
+            <div class="header">
+                Erro.
+            </div>
+            <p></p>
         </div>
-        <p></p>
-    </div>
 
-    <input type="hidden" value="{{article.id}}" name="id">
+        <input type="hidden" value="{{article.id}}" name="id">
 
-    <div class="field">
-        <label>Título</label>
-        <input type="text" name="title" value="{{article.title}}">
-    </div>
-    <div class="field">
-        <label>Conteúdo</label>
-        <textarea name="content">{{article.content}}</textarea>
-    </div>
+        <div class="field">
+            <label>Título</label>
+            <input type="text" name="title" value="{{article.title}}">
+        </div>
+        <div class="field">
+            <label>Conteúdo</label>
+            <textarea name="content">{{article.content}}</textarea>
+        </div>
 
-    <input type="submit" class="ui button primary" value="Salvar"/>
-    <a href="/" class="ui button">Cancelar</a>
-    <div
-        onclick="deletePost()"
-        class="ui labeled icon button basic right floated">
-        <i class="icon delete"></i>
-        Excluir
-    </a>
+        <input type="submit" class="ui button primary" value="Salvar"/>
+        <a href="/" class="ui button">Cancelar</a>
+        <div
+            onclick="deletePost()"
+            class="ui labeled icon button basic right floated">
+            <i class="icon delete"></i>
+            Excluir
+        </a>
 
-</form>
+    </form>
+
+</div>
 
 <script>
 function deletePost() {

@@ -37,6 +37,10 @@ type Article = {
 
 declare namespace MySql {
     export interface Connection {
-        execute(query:string, params?:any)
+        execute(query: string, params?: any): Promise<any>;
+        
+        connection: {
+            config: any
+        };
     }
 }

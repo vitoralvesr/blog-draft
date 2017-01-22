@@ -1,0 +1,66 @@
+<style scoped>
+    .content {
+        display: flex;
+    }
+    .window {
+        padding: 0 30px;
+    }
+    #mainMenu {
+        max-width: 150px;
+    }
+    #mainMenu .item.active {
+        background-color: #f1f1f1;
+    }
+    h2 {
+        margin-bottom: 1em;
+    }
+    .ui.form label {
+        font-weight: bold;
+    }
+</style>
+
+<div class="ui container">
+
+    <h1 class="ui header">Admin</h1>
+
+    <div class="content">
+
+        <div class="ui secondary vertical pointing menu" id="mainMenu">
+            <a class="item" data-id="articles">Artigos</a>
+            <a class="item" data-id="config">Configuração</a>
+        </div>
+
+        <div class="window">
+        </div>
+
+    </div>
+
+
+</div>
+
+<script>
+$(function(){
+    var __root = '/pages/admin/'
+    var windowEl = document.querySelector('.content .window')        
+    var $allItems = $('.content .menu .item')
+
+    function selectItem(identifier) {
+        var content = Site.ajaxHtml({ 
+            url : __root + identifier
+        }).then( function(content) {
+            windowEl.innerHTML = content
+            $allItems.removeClass('active')
+            $allItems.filter('[data-id='+identifier+']').addClass('active')
+            window.location.hash = identifier
+        })
+    }
+
+    let toSelect = String(window.location.hash).substr(1)
+    selectItem(toSelect || 'articles')
+
+    $allItems.on('click', function(){
+        var identifier = this.attributes['data-id'].value
+        selectItem(identifier)
+    })
+})
+</script>

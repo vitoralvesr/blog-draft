@@ -96,7 +96,7 @@ api.post('/password-reset-request', (req, res, next) => {
     let _bytes, _userName, _userId
     Promise.resolve().then(() => {
         $checkParams(req.body, 'email')
-        return connection
+        return <any>connection
         .execute(
             `SELECT u.id AS userId , u.name AS userName, ev.token AS token
                 FROM 
@@ -151,7 +151,7 @@ api.post('/create', async (req, res, next) => {
         //TODO: multiple editors
         if (roles.USER_ADMIN_ID !== undefined) throw Error('Não é possível adicionar um novo editor.')
         var setRole = roles.USER_ADMIN_ID === undefined ? roles.ROLE_ADMIN_ID : roles.ROLE_NEW_ID
-        await connection.execute('INSERT into `users` (name, display_name, email, hash, role) VALUES (? , ?, ?, ?)',
+        await connection.execute('INSERT into `users` (name, display_name, email, hash, role) VALUES (? , ?, ?, ?, ?)',
                 [username, username, email, hash, setRole])
         await mailer({
             email,
@@ -161,11 +161,6 @@ api.post('/create', async (req, res, next) => {
 **Nome de usuário**: ${username}  
 **Senha:** ${_password}`
         })
-        //let loginResp = await userLogin({
-        //    username,
-        //    password: _password,
-        //    session: req.session
-        //})
         res.status(200).send({ status: 'ok' })
     } catch (err) {
         if (err.code === 'ER_DUP_ENTRY') return next(ono(err, 'Já existe um '))
@@ -179,7 +174,7 @@ api.post('/password-change', auth.authGate, (req, res, next) => {
     Promise.resolve().then(()=>{
         $checkParams(b, 'currentPassword', 'newPassword', 'newPasswordConfirm')
         if (b.newPassword !== b.newPasswordConfirm) throw Error('As novas senhas devem bater.')
-        return connection.execute('SELECT hash from users WHERE id = ?', [req.session.userId])            
+        return <any>connection.execute('SELECT hash from users WHERE id = ?', [req.session.userId])            
     })
     .then( ([rows])  => {
         if (!rows.length) throw Error('Erro Inesperado!')

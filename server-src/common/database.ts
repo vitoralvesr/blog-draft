@@ -1,7 +1,9 @@
 import mysql = require('mysql2/promise')
 import mysqlLegacy = require('mysql2')
+import changeCase = require('change-case')
 
 export var connection: MySql.Connection
+//express-session wont work with mysql2/promise version...
 export var legacyConnection: MySql.Connection
 
 const connectionParams = {
@@ -13,20 +15,30 @@ const connectionParams = {
 
 export async function init() {
     if (connection) return
-    connection = await mysql.createConnection(connectionParams)
+    connection = await mysql.createConnection(connectionParams);
+    connection.connection.config.namedPlaceholders = true;
     legacyConnection = await mysqlLegacy.createConnection(connectionParams)
 }
 
 
-/**
- * mysql crashes the server if passed an undefined param
- */
-export function fixObject(obj) {
-    var out = {}
-    for (var key in obj) {
-        let val = obj[key]
-        if (val === null || val === undefined) out[key] = ''
-        else out[key] = val
-    }
-    return out
+type insertOpts = {
+    fields: string[]
+    data: any
+    into: string,
+    camelCase?: boolean
+}
+export async function insert(p: insertOpts) {
+    var outFields = p.camelCase ?
+        p.fields.map(item => changeCase.snakeCase(item)) :
+        p.fields
+    
+    var values = outFields.map((current, idx) => { 
+        let srcfield = p.fields[idx]
+        return p.data[srcfield] || null
+    })
+
+    let query = `INSERT INTO ${p.into}(${outFields.join(',')})
+        VALUES (${Array(values.length).fill('?').join(',')})`
+    
+    return connection.execute(query, values)
 }

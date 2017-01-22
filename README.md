@@ -24,6 +24,7 @@ Should be it. Run `node .`
 ## App
 
     APP_BASE_URL *
+    APP_LIVERELOAD -- adds the livereload header
 
 ## Email
 

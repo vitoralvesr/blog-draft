@@ -1,42 +1,46 @@
-<h1>Novo usuário</h1>
+<div class="ui container">
 
-<form class="ui form"
-    name="newUserForm"
-    data-url="/api/user/create"
-    data-method="POST"
-    data-redirect-to="/"
-    onSubmit="Site.submitForm(this)">
+    <h1>Novo usuário</h1>
 
-    <div class="ui message error">
-        <i class="close icon"></i>
-        <div class="header">
-            Erro.
+    <form class="ui form"
+        name="newUserForm"
+        data-url="/api/user/create"
+        data-method="POST"
+        data-redirect-to="/"
+        onSubmit="Site.submitForm(this)">
+
+        <div class="ui message error">
+            <i class="close icon"></i>
+            <div class="header">
+                Erro.
+            </div>
+            <p></p>
         </div>
-        <p></p>
-    </div>
 
-    {{#if message}}
-    <div class="ui message">
-        <div class="header">
-            {{message.title}}
+        {{#if message}}
+        <div class="ui message">
+            <div class="header">
+                {{message.title}}
+            </div>
+            <p>{{message.content}}</p>
         </div>
-        <p>{{message.content}}</p>
-    </div>
-    {{/if}}
+        {{/if}}
 
-    <div class="field">
-        <label>Nome de Usuário</label>
-        <input type="text" name="username" data-validate="empty"/>
-    </div>
-    <div class="field">
-        <label>Email</label>
-        <input type="text" name="email" data-validate="empty">
-    </div>
+        <div class="field">
+            <label>Nome de Usuário</label>
+            <input type="text" name="username" data-validate="empty"/>
+        </div>
+        <div class="field">
+            <label>Email</label>
+            <input type="text" name="email" data-validate="empty">
+        </div>
 
-    <input type="submit" class="ui button primary" value="OK"></input>
-    <a class="ui button" href="/pages/user/login">Cancelar</a>
+        <input type="submit" class="ui button primary" value="OK"></input>
+        <a class="ui button" href="/pages/user/login">Cancelar</a>
 
-</form>
+    </form>
+
+</div>
 
 <script>
 $(function(){

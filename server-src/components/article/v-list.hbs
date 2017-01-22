@@ -5,7 +5,12 @@
     }
     .article-heading > .ui.header {
         display: inline-block;
+        margin-bottom: 0;
     }
+    .post-meta {
+        color: #cac8c8;
+        font-style: italic;        
+    }    
     .article-content {
         position: relative;
     }
@@ -26,8 +31,9 @@
         margin-top: 1em;
         font-size: 4em;
     }
-    .post.segment {
+    .ui.post.segment {
         padding: 4em 0;
+        border: none;
     }
 
     #fixedMenu {
@@ -81,7 +87,7 @@
 
 <div>
     {{#each itens}}
-    <div class="ui vertical post segment">
+    <div class="ui vertical post borderless segment">
         <div class="ui text container">
             <div class="article-heading">                
                 <h1 class="ui header">{{title}}</h1>

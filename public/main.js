@@ -107,6 +107,24 @@
     exports.ajaxRequest = ajaxRequest
 
 
+    function ajaxHtml(params) {
+        var url = params.url
+        return new Promise((resolve, reject) => {
+            let req = new XMLHttpRequest()
+            req.open('GET', url)
+            req.send()
+            req.addEventListener('load', function() {
+                if (req.statusText == 'OK') {
+                    return resolve(req.responseText)
+                } else {
+                    reject({ error : Error(req.responseText)})
+                }
+            })
+        })        
+    }
+    exports.ajaxHtml = ajaxHtml
+
+
     exports.findParentField = function(element) {
         var $el = $(element)
         while (!$el.hasClass('field')) {
