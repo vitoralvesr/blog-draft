@@ -1,12 +1,12 @@
 import express = require('express')
-const pages = express.Router()
+const user = express.Router()
 const api = require('./api')
 import authMw = require('@common/auth-mw')
 import roles = require('@common/roles')
 import { config } from '@common/config'
 
 
-pages.get('/login', (req, res) => {
+user.get('/login', (req, res) => {
     if (req.session.userId) return res.redirect('/')
     res.render('v-login', {
         //show new account button if theres no admin user or if the option is enabled
@@ -15,7 +15,7 @@ pages.get('/login', (req, res) => {
 })
 
 
-pages.get('/create', (req, res) => {
+user.get('/create', (req, res) => {
     var send: any = {}
     if (roles.USER_ADMIN_ID === undefined) send.message = {
         title: 'Primeiro acesso',
@@ -26,12 +26,12 @@ pages.get('/create', (req, res) => {
 })
 
 
-pages.get('/password-reset-request', (req, res) => {
+user.get('/password-reset-request', (req, res) => {
     res.render('v-password-reset-request')
 })
 
 
-pages.get('/password-reset-confirm/:token', (req, res, next) => {
+user.get('/password-reset-confirm/:token', (req, res, next) => {
     var _token
     Promise.resolve().then(() => {
         ;({ _token } = $checkParams(req.params, 'token'))
@@ -44,9 +44,9 @@ pages.get('/password-reset-confirm/:token', (req, res, next) => {
 })
 
 
-pages.get('/password-change', authMw.authGate, (req, res, next) => {
+user.get('/password-change', authMw.authGate, (req, res, next) => {
     res.render('v-password-change', { title: 'Alterar senha' })
 })
 
 
-module.exports = pages
+module.exports = user

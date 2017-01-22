@@ -1,1 +1,44 @@
-<h2>Artigos</h2>
+<style scoped>
+    .heading h3 {
+        display: inline-block;
+    }
+    .heading .button {
+        float: right;
+        position: relative;
+        top: -4px;
+    }
+    .segment.article:hover {
+        background-color: #f5f5f5;
+    }
+</style>
+
+<div class="ui segments">
+
+    {{#each articles}}
+    <div 
+        class="ui segment article"
+        onclick="ConfigArticles.goTo({{id}})">
+        <div class="heading">
+            <h3 class="ui header">{{title}}</h2>
+            {{!--
+            <div class="ui mini icon button">
+                <i class="edit icon"></i>
+                Editar
+            </div>
+            --}}
+        </div>
+        <p>{{ trimmed_content }}</p>
+    </div>
+    {{/each}}
+
+</div>
+
+<script>
+    var exported = function() {
+        window.ConfigArticles = {}
+        ConfigArticles.goTo = function(id) {
+            window.location.hash = ''
+            window.location.pathname = '/pages/article/' + id + '/edit'
+        }
+    }
+</script>

@@ -4,7 +4,9 @@ const mysqlStore = _mysqlStore(expressSession)
 import ono = require('ono')
 import db = require('@common/database')
 
-export var session = expressSession({
+
+
+export var initSession = expressSession({
     secret: 'unusualSecret' ,
     cookie : {
         maxAge : 1000 * 60 * 60 * 24 * 7

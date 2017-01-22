@@ -8,9 +8,11 @@ api.put('/:id?',  async (req, res, next) => {
         $checkParams(req.body, 'id')
         //var provider = await ArticleProvider.init(req.body.id)
         //await provider.update(req.body)
+        let trimmed = (req.body.content||'').substr(0,200) + ' ...'
         await db.execute(
-            'UPDATE articles SET title = ?, content = ? WHERE id = ?',
-            [req.body.title||'', req.body.content||'', req.body.id||'']
+            `UPDATE articles SET title = ?, content = ?, trimmed_content = ?
+            WHERE id = ?`,
+            [req.body.title||'', req.body.content||'', trimmed, req.body.id||'']
         )
         res.status(200).send({ status: 'ok' })
     } catch (err) {
@@ -25,9 +27,11 @@ api.post('/', async (req, res, next) => {
         if (req.body.source === 'git')
             $checkParams(req.body, 'githubUser', 'githubRepo', 'githubPath')
         req.body.user = Number(req.session.userId)
+        req.body.trimmed_content = (req.body.content||'').substr(0,200) + ' ...'        
         await insert({
             into: 'articles',
-            fields: ['source', 'githubUser', 'githubRepo', 'githubPath', 'title', 'content', 'user'],
+            fields: ['source', 'githubUser', 'githubRepo', 'githubPath',
+                'title', 'content', 'user', 'trimmed_content'],
             data: req.body,
             camelCase : true
         })

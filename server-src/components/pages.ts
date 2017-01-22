@@ -1,4 +1,3 @@
-import auth = require('@common/auth-mw')
 import express = require('express')
 const pages = express()
 
@@ -21,9 +20,10 @@ const oldRender = pages.response.render
 pages.response = <any>{
     __proto__ : pages.response ,
     render(this: express.Response, path, data = {}, ...params) {
+        var session = this.req.session || {}
         let extendedParams = Object.assign(data, {
-            $online : this.req.session.userId !== undefined ,
-            $userName: this.req.session.userName,
+            $online : session.userId !== undefined ,
+            $userName: session.userName,
             $liveReload: process.env.APP_LIVERELOAD > 0
         })
         let url = this.req.originalUrl.split('/').slice(1)
@@ -37,7 +37,6 @@ pages.response = <any>{
 
 
 //routes
-pages.use(auth.session)
 pages.use('/article', require('./article/pages'))
 pages.use('/user', require('./user/pages'))
 pages.use('/admin', require('./admin/pages'))

@@ -3,7 +3,8 @@
         display: flex;
     }
     .window {
-        padding: 0 30px;
+        padding: 0 0 0 30px;
+        flex-grow: 1;
     }
     #mainMenu {
         max-width: 150px;
@@ -17,6 +18,20 @@
     .ui.form label {
         font-weight: bold;
     }
+    .submit-block {
+        width: 100%;
+    }
+    .submit-block .ui.button {
+        margin:15px 0;
+        float:right;
+    }
+
+    @media only screen and (max-width:700px) {
+        .content {
+            flex-wrap: wrap;
+        }
+    }
+
 </style>
 
 <div class="ui container">
@@ -25,9 +40,10 @@
 
     <div class="content">
 
-        <div class="ui secondary vertical pointing menu" id="mainMenu">
+        <div class="ui secondary vertical pointing stackable menu" id="mainMenu">
             <a class="item" data-id="articles">Artigos</a>
             <a class="item" data-id="config">Configuração</a>
+            <a class="item" data-id="change-password">Alterar senha</a>
         </div>
 
         <div class="window">
@@ -52,10 +68,22 @@ $(function(){
             $allItems.removeClass('active')
             $allItems.filter('[data-id='+identifier+']').addClass('active')
             window.location.hash = identifier
+            //UGLY CODE BELOW
+            //a dom list is not an array. Must convert to.
+            //Assume Array.from not available
+            var _scripts = windowEl.querySelectorAll('script')
+            var scripts = []
+            for ( var x = 0 ; x < _scripts.length; x++ ) {
+                scripts.push(_scripts[x])
+            }
+            scripts.forEach(function(scriptEl){
+                eval(scriptEl.innerText)
+                if (typeof exported !== 'undefined') exported()
+            })
         })
     }
 
-    let toSelect = String(window.location.hash).substr(1)
+    var toSelect = String(window.location.hash).substr(1)
     selectItem(toSelect || 'articles')
 
     $allItems.on('click', function(){

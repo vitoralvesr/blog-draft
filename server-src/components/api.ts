@@ -4,7 +4,6 @@ import express = require('express')
 const api = express.Router()
 
 api.use(bodyParser.json())
-api.use(auth.session)
 
 
 api.use('/user', require('./user/api'))
@@ -15,6 +14,7 @@ api.use(auth.authGate)
 
 
 api.use('/article', require('./article/api'))
+api.use('/admin', require('./admin/api'))
 
 
 api.use( (error, req, res, next) => {

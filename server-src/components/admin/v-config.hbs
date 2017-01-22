@@ -1,4 +1,18 @@
-<div class="ui form">
+<form
+    name="configForm"
+    class="ui form"
+    data-url="/api/admin/config"
+    data-method="PUT"
+    onsubmit=""
+>
+
+    <div class="ui message error">
+        <i class="close icon"></i>
+        <div class="header">
+            Erro.
+        </div>
+        <p></p>
+    </div>
 
     <div class="ui grid">
         <div class="row">
@@ -25,18 +39,24 @@
                 <input type="text" name="timestamp_format"></input>
             </div>
         </div>
-        <div class="row">
-            <div class="four wide column">
-                <label></label>
-            </div>
-            <div class="twelve wide column"></div>
-        </div>
-        <div class="row">
-            <div class="four wide column">
-                <label></label>
-            </div>
-            <div class="twelve wide column"></div>
-        </div>                        
+        <div class="submit-block">
+            <input
+                class="ui button primary"
+                type="submit"
+                value="Salvar">
+            </input>
+        </div>                
     </div>
 
-</div>
+</form>
+
+
+<script>
+    var exported = function() {
+        configForm.addEventListener('submit', function() {
+            Site.submitForm(configForm)
+        })
+        var dataz = {{{config}}};
+        Site.populateForm(configForm, dataz);
+    }
+</script>

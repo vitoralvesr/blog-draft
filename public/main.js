@@ -38,6 +38,7 @@
         }, {})        
 
         let submitBtn = formEl.querySelector('input[type="submit"]')
+        $(submitBtn).removeClass('primary')
         let prevValue = submitBtn.value
         submitBtn.value = 'Enviando'
 
@@ -49,9 +50,16 @@
             url : formEl.dataset.url ,
             body : objectToSend
         }).then(() => {
-            window.location.pathname = formEl.dataset.redirectTo
-            _submitting = false
-            submitBtn.value = prevValue
+            submitBtn.value = 'Salvo!'
+            $(submitBtn).addClass('primary')            
+            setTimeout(function () { 
+                submitBtn.value = prevValue
+            }, 2000)
+            _submitting = false            
+            if (formEl.dataset.redirectTo) {
+                window.location.pathname = formEl.dataset.redirectTo
+                return
+            }
         })
         .catch( function(err) {
             _submitting = false
@@ -71,11 +79,20 @@
     exports.submitForm = submitForm
 
 
+    function populateForm(formEl, valuesObj) {
+        for (var it in valuesObj) {
+            var field = formEl.elements[it]
+            if (field) field.value = valuesObj[it]
+        }
+    }
+    exports.populateForm = populateForm
+
+
     function ajaxRequest(params) {
         var method = params.method
         var url = params.url
         var body = params.body
-        return new Promise((resolve, reject) => {
+        return new Promise(function (resolve, reject) {
             body = body || {}
             let req = new XMLHttpRequest()
             req.open(method||'POST', url)
@@ -109,7 +126,7 @@
 
     function ajaxHtml(params) {
         var url = params.url
-        return new Promise((resolve, reject) => {
+        return new Promise(function (resolve, reject) {
             let req = new XMLHttpRequest()
             req.open('GET', url)
             req.send()

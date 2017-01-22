@@ -20,7 +20,6 @@ import roles = require('./common/roles')
 import config = require('./common/config')
 import '@common/mail' //init
 
-
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 global['$debugMw'] = (msg) => (req, res, next) => {
@@ -77,7 +76,10 @@ database.init().then(() => {
             {}
         )
     )
+
+    const session = require('./common/auth-mw')
     
+    app.use( session.initSession )
     app.use('/pages', require('./components/pages'))
     app.use('/api', require('./components/api'))
     app.get('/', (req, res) => res.redirect('/pages/article/list'))
