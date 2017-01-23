@@ -18,3 +18,21 @@ pre.ui.segment {
 body > .pusher > .ui.container {
     margin-top: 5em;
 }
+
+.editor-toolbar.fullscreen {
+    z-index: 102 !important;
+}
+
+.CodeMirror .CodeMirror-scroll{
+  min-height: 200px !important;
+}
+
+.CodeMirror-code {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6em;
+}
+
+span.cm-formatting.cm-formatting-code-block, .cm-comment {
+    font-family: monospace;
+}

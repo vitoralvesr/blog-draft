@@ -3,7 +3,6 @@
     class="ui form"
     data-url="/api/admin/config"
     data-method="PUT"
-    onsubmit=""
 >
 
     <div class="ui message error">
@@ -15,7 +14,7 @@
     </div>
 
     <div class="ui grid">
-        <div class="row">
+        <div class="stackable row">
             <div class="four wide column">
                 <label>Título principal</label>
             </div>
@@ -23,7 +22,7 @@
                 <input type="text" name="main_title"></input>
             </div>
         </div>
-        <div class="row">
+        <div class="stackable row">
             <div class="four wide column">
                 <label>Subtítulo principal</label>
             </div>
@@ -31,14 +30,33 @@
                 <input type="text" name="main_subtitle"></input>
             </div>
         </div>
-        <div class="row">
+        <div class="stackable row">
             <div class="four wide column">
                 <label>Formatação de data</label>
+                <i 
+                    class="icon help circle"
+                    data-content="Para a sintaxe, consulte a documentação da biblioteca moment.js.">
+                </i>
             </div>
             <div class="twelve wide column">
                 <input type="text" name="timestamp_format"></input>
             </div>
         </div>
+        <div class="stackable row">
+            <div class="four wide column">
+                <label>Permitir HTML em posts</label>
+                <i 
+                    class="icon help circle"
+                    data-content="Caso ativo, permite a injeção de HTML em posts, o que trás flexibilidade para a adição de conteúdo, mas permite também a adição de conteúdo inseguro (scripts)."
+                >
+                </i>                
+            </div>
+            <div class="twelve wide column">
+                <div class="ui checkbox">
+                    <input type="checkbox" name="allow_html"></input>
+                </div>
+            </div>
+        </div>        
         <div class="submit-block">
             <input
                 class="ui button primary"
@@ -54,8 +72,15 @@
 <script>
     var exported = function() {
         configForm.addEventListener('submit', function() {
-            Site.submitForm(configForm)
+            Site.submitForm(configForm, {
+                editData : function(data) {
+                    data.sanitize_markdown = (data.allow_html == true) ? '0' : '1'
+                    return data
+                }
+            })
         })
+        $('.ui.checkbox').checkbox()
+        $('i.help').popup()
         var dataz = {{{config}}};
         Site.populateForm(configForm, dataz);
     }

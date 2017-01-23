@@ -7,6 +7,7 @@ type keys = {
     timestamp_format
     main_title
     main_subtitle
+    sanitize_markdown
 }
 type keysList = keyof keys
 export var config : keys
@@ -17,6 +18,7 @@ export async function init() {
     set('main_subtitle', 'Subtítulo', true)
     set('new_account_button', '', true)
     set('timestamp_format', 'D MMM YYYY', true)
+    set('sanitize_markdown', '1', true)
 
     let [rows] = await db.execute('SELECT * FROM config')
     config = rows.reduce((out, item) => {

@@ -8,7 +8,7 @@ api.put('/:id?',  async (req, res, next) => {
         $checkParams(req.body, 'id')
         //var provider = await ArticleProvider.init(req.body.id)
         //await provider.update(req.body)
-        let trimmed = (req.body.content||'').substr(0,200) + ' ...'
+        let trimmed = (req.body.content||'').substr(0,380) + ' ...'
         await db.execute(
             `UPDATE articles SET title = ?, content = ?, trimmed_content = ?
             WHERE id = ?`,
@@ -27,7 +27,7 @@ api.post('/', async (req, res, next) => {
         if (req.body.source === 'git')
             $checkParams(req.body, 'githubUser', 'githubRepo', 'githubPath')
         req.body.user = Number(req.session.userId)
-        req.body.trimmed_content = (req.body.content||'').substr(0,200) + ' ...'        
+        req.body.trimmed_content = (req.body.content||'').substr(0,380) + ' ...'        
         await insert({
             into: 'articles',
             fields: ['source', 'githubUser', 'githubRepo', 'githubPath',
@@ -59,7 +59,7 @@ api.post('/github-utf8', async (req, res, next) => {
 api.delete('/:id', async (req, res, next) => {
     try {
         $checkParams(req.params, 'id')
-        db.execute('DELETE FROM article WHERE id = ?', [req.params.id])
+        await db.execute('DELETE FROM articles WHERE id = ?', [req.params.id])
         res.status(200).send({status : 'OK'})
     } catch (err) {
         next(err)

@@ -1,14 +1,31 @@
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
 <div class="ui container">
 
-    <h1>{{title}}</h1>
+    <h1 style="display:inline-block">{{title}}</h1>
+
+    <div style="display:inline-block;float:right;">
+        <div class="ui message" style="display:flex;align-items:center;">
+            <p style="flex-grow:1;margin:0 15px 0 0;">
+                Os posts usam o <span style="font-weight:bold">markdown</span> para formatação.
+            </p>
+            <div class="ui button"
+                onclick="window.open('/assets/markdown-guide.html')">
+                Como usar o markdown
+            </div>
+        </div>
+    </div>
 
     <form
         class="ui form" 
         name="articleForm"
         data-url="/api/article/{{article.id}}"
         data-method="PUT"
-        data-redirect-to="/"
-        onSubmit="Site.submitForm(this)">
+        data-redirect-to="/">
 
         <div class="ui message error">
             <i class="close icon"></i>
@@ -24,9 +41,10 @@
             <label>Título</label>
             <input type="text" name="title" value="{{article.title}}">
         </div>
+
         <div class="field">
             <label>Conteúdo</label>
-            <textarea name="content">{{article.content}}</textarea>
+            <textarea name="content" id="mdContent">{{article.content}}</textarea>
         </div>
 
         <input type="submit" class="ui button primary" value="Salvar"/>
@@ -43,19 +61,39 @@
 </div>
 
 <script>
-function deletePost() {
-    var id = articleForm.id.value
-    $.ajax({
-        method : 'DELETE' ,
-        url : '/api/article/' + id
-    }).then(() => {
-        window.location.pathname = '/'
+$(function() {
+    var editor = new SimpleMDE(
+        Site.defaultMDEConfig(document.getElementById('mdContent'))
+    )
+
+    setTimeout(function(){
+        Site.fitHeight(document.querySelector('.CodeMirror'), 100)
+    },0)
+
+    window.addEventListener('resize', function() {
+        Site.fitHeight(document.querySelector('.CodeMirror'), 100)
     })
-    .catch( function(err) {
-        $('.ui.message.error')
-            .html('<p>' + (err.message || err.responseText) + '</p>')
-            .show()
-        $('body').animate({scrollTop:0},1000)
+
+    window.deletePost = function() {
+        var id = articleForm.id.value
+        $.ajax({
+            method : 'DELETE' ,
+            url : '/api/article/' + id
+        }).then(() => {
+            window.location.pathname = '/'
+        })
+        .catch( function(err) {
+            $('.ui.message.error')
+                .html('<p>' + (err.message || err.responseText) + '</p>')
+                .show()
+            $('body').animate({scrollTop:0},1000)
+        })
+    }
+
+    articleForm.addEventListener('submit', function() {
+        articleForm.content.innerHTML = editor.value()
+        Site.submitForm(this)
     })
-}
+
+})
 </script>

@@ -7,7 +7,9 @@
         flex-grow: 1;
     }
     #mainMenu {
-        max-width: 150px;
+        flex-grow: 0;
+        flex-shrink: 0;        
+        flex-basis: 150px;
     }
     #mainMenu .item.active {
         background-color: #f1f1f1;
@@ -43,7 +45,7 @@
         <div class="ui secondary vertical pointing stackable menu" id="mainMenu">
             <a class="item" data-id="articles">Artigos</a>
             <a class="item" data-id="config">Configuração</a>
-            <a class="item" data-id="change-password">Alterar senha</a>
+            <a class="item" data-id="change-password">Alterar senha...</a>
         </div>
 
         <div class="window">
@@ -71,7 +73,7 @@ $(function(){
             //UGLY CODE BELOW
             //a dom list is not an array. Must convert to.
             //Assume Array.from not available
-            var _scripts = windowEl.querySelectorAll('script')
+            var _scripts = document.querySelectorAll('.window > script')
             var scripts = []
             for ( var x = 0 ; x < _scripts.length; x++ ) {
                 scripts.push(_scripts[x])

@@ -1,5 +1,6 @@
 import express = require('express')
 const pages = express()
+import { config } from '@common/config'
 
 //handlebars setup
 import ehbs = require('express-handlebars')
@@ -24,7 +25,9 @@ pages.response = <any>{
         let extendedParams = Object.assign(data, {
             $online : session.userId !== undefined ,
             $userName: session.userName,
-            $liveReload: process.env.APP_LIVERELOAD > 0
+            $liveReload: process.env.APP_LIVERELOAD > 0,
+            $blogTitle: config.main_title,
+            $blogSubtitle: config.main_subtitle
         })
         let url = this.req.originalUrl.split('/').slice(1)
         if (path.charAt(0) === '@')
@@ -48,7 +51,7 @@ pages.get('/', (req, res) => {
 //error handler
 pages.use( (error, req, res, next) => {
     if (error.code == 'UNAUTHORIZED')
-        return res.redirect('/pages/login')
+        return res.redirect('/pages/user/login')
 
     console.error('Error on route ' + req.url, error)
     res.render('@error', { error })

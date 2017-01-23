@@ -143,13 +143,13 @@ para redefinir a sua senha.`
  */
 api.post('/create', async (req, res, next) => {
     try {
+        if (roles.USER_ADMIN_ID !== undefined) throw Error('No momento, não é possível adicionar um novo editor.')        
         let { username, email } = req.body
         var _password
         if (!username || !email) throw ono('Falta o nome de usuário ou o email.')
         _password = passwordGen(12)
         var hash = await bcrypt.hash(_password, 10)
         //TODO: multiple editors
-        if (roles.USER_ADMIN_ID !== undefined) throw Error('Não é possível adicionar um novo editor.')
         var setRole = roles.USER_ADMIN_ID === undefined ? roles.ROLE_ADMIN_ID : roles.ROLE_NEW_ID
         await connection.execute('INSERT into `users` (name, display_name, email, hash, role) VALUES (? , ?, ?, ?, ?)',
                 [username, username, email, hash, setRole])

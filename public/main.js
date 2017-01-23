@@ -1,5 +1,5 @@
 /* eslint-env browser */
-/* global $ */
+/* global $, SimpleMDE */
 
 (function() {
     var exports = {}
@@ -11,9 +11,11 @@
      *   - data-url
      *   - data-method
      *   - data-redirect-to
+     *
      * @param {HTMLFormElement} formEl
      */
-    function submitForm( formEl ) {
+    function submitForm( formEl, opts ) {
+        opts = opts || {}
         event.preventDefault()
         if (!$(formEl).form('is valid')) return
         if (_submitting) return
@@ -34,8 +36,13 @@
 
         let objectToSend = formItems.reduce((previous, current) => {
             previous[current.name] = current.value
+            if (current.tagName === 'INPUT' && current.type === 'checkbox') {
+                previous[current.name] = current.checked ? '1' :  '0'
+            }
             return previous
         }, {})        
+
+        if (opts.editData) objectToSend = opts.editData(objectToSend)
 
         let submitBtn = formEl.querySelector('input[type="submit"]')
         $(submitBtn).removeClass('primary')
@@ -82,7 +89,12 @@
     function populateForm(formEl, valuesObj) {
         for (var it in valuesObj) {
             var field = formEl.elements[it]
-            if (field) field.value = valuesObj[it]
+            if (field) {
+                if (field.type === 'checkbox') {
+                    field.checked = valuesObj[it] == true
+                }
+                else field.value = valuesObj[it]
+            }
         }
     }
     exports.populateForm = populateForm
@@ -156,11 +168,115 @@
         })
     }
 
+    
+    exports.defaultMDEConfig = function(element) {
+        return {
+            element: element,
+            spellChecker: false,
+            renderingConfig: { codeSyntaxHighlighting: true },
+            toolbar: [
+                {
+                    "name": "bold",
+                    "action": SimpleMDE.toggleBold,
+                    "title": "Negrito",
+                    "className": "fa fa-bold"
+                },
+                {
+                    "name": "italic",
+                    "action": SimpleMDE.toggleItalic,
+                    "title": "Itálico",
+                    "className": "fa fa-italic"
+                },
+                {
+                    "name": "strikethrough",
+                    "action": SimpleMDE.toggleStrikethrough,
+                    "title": "Tachado",
+                    "className": "fa fa-strikethrough"
+                },
+                "|",
+                {
+                    "name": "heading",
+                    "action": SimpleMDE.toggleHeadingSmaller,
+                    "title": "Título",
+                    "className": "fa fa-header"
+                },
+                {
+                    name: "quote",
+                    action: SimpleMDE.toggleBlockquote,
+                    title: "Citação",
+                    "className" : "fa fa-quote-left no-mobile"
+                } ,
+                "|",
+                {
+                    "name": "unordered-list",
+                    "action": SimpleMDE.toggleUnorderedList,
+                    "title": "Tópicos",
+                    "className": "fa fa-list-ul"
+                },
+                {
+                    "name": "ordered-list",
+                    "action": SimpleMDE.toggleOrderedList,
+                    "title": "Lista numerada",
+                    "className": "fa fa-list-ol"
+                },
+                "|",
+                {
+                    "name": "link",
+                    "action": SimpleMDE.drawLink,
+                    "title": "Link",
+                    "className": "fa fa-link"
+                },
+                {
+                    "name": "image",
+                    "action": SimpleMDE.drawImage,
+                    "title": "Imagem",
+                    "className": "fa fa-picture-o"
+                },
+                {
+                    "name": "table",
+                    "action": SimpleMDE.drawTable,
+                    "title": "Tabela",
+                    "className": "fa fa-table"
+                },
+                "|" ,
+                {
+                    "name": "side-by-side",
+                    "action": SimpleMDE.toggleSideBySide,
+                    "title": "Previsão",
+                    "className": "fa fa-eye no-disable no-mobile"
+                },
+                {
+                    "name": "fullscreen",
+                    "action": SimpleMDE.toggleFullScreen,
+                    "title": "Tela cheia",
+                    "className": "fa fa-arrows-alt no-disable"
+                },
+                {
+                    "name": "guide",
+                    "action": function () { 
+                        window.open('/assets/markdown-guide.html')
+                    },
+                    "title": "Ajuda",
+                    "className": "fa fa-question-circle no-mobile"
+                }
+            ]
+        }
+    }
+
+
+    exports.fitHeight = function (element, offset) {
+        offset = offset || 20
+        var currentY = $(element).offset().top - window.pageYOffset
+        element.style.height = (window.innerHeight - currentY - offset) + 'px'
+    }
+
     window.Site = exports
 
     $(function() {
         $('pre').addClass('ui segment')
         $('.ui.menu .ui.dropdown.item').dropdown()        
     })
+
+
 
 })()

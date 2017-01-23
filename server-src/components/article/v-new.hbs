@@ -1,7 +1,23 @@
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css">
+
 <div class="ui container">
 
-    <h1>{{title}}</h1>
+    <h1 style="display:inline-block">{{title}}</h1>
 
+    <div style="display:inline-block;float:right;">
+        <div class="ui message" style="display:flex;align-items:center;">
+            <p style="flex-grow:1;margin:0 15px 0 0;">
+                Os posts usam o <span style="font-weight:bold">markdown</span> para formatação.
+            </p>
+            <div class="ui button"
+                onclick="window.open('/assets/markdown-guide.html')">
+                Como usar o markdown
+            </div>
+        </div>
+    </div>
     <form
         class="ui form" 
         name="articleForm"
@@ -47,7 +63,7 @@
                     <div class="ui button" id="gitVerify">Buscar</div>
                 </div>
             </div>
-        </div>
+        </div>       
 
         <div class="field">
             <label>Conteúdo</label>
@@ -63,6 +79,17 @@
 <script>
 $(function(){
     $('select').dropdown()
+    var editor = new SimpleMDE(
+        Site.defaultMDEConfig(articleForm.content)
+    )
+
+    setTimeout(function(){
+        Site.fitHeight(document.querySelector('.CodeMirror'), 100)
+    },0)
+
+    window.addEventListener('resize', function() {
+        Site.fitHeight(document.querySelector('.CodeMirror'), 100)
+    })    
 
     //git source extra field
     var gitField = articleForm.querySelector('.git-field')
@@ -134,6 +161,7 @@ $(function(){
             return
         }
 
+        articleForm.content.innerHTML = editor.value()
         Site.submitForm(this)
     })
 })

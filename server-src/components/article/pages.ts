@@ -7,7 +7,6 @@ import moment = require('moment')
 import { config } from '@common/config'
 
 marked.setOptions({
-    sanitize : true ,
     highlight: function (code) {
         return highlight.highlightAuto(code).value;
     }
@@ -22,7 +21,11 @@ pages.get('/list', async (req, res, next) => {
             ORDER BY created DESC`
         )
         var all = rows.map(async row => {
-            var content = await $promisify( marked, row.content )
+            var content = await $promisify(
+                marked,
+                row.content,
+                { sanitize: config.sanitize_markdown == true }
+            )
             row.content = content
             row.formattedDate = moment(row.created).format(config.timestamp_format)
             row.userDisplayName = row.display_name

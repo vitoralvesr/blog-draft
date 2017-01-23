@@ -24,7 +24,8 @@
     "nodemailer": "^2.7.0",
     "ono": "^2.2.1",
     "password-generator": "^2.1.0",
-    "request": "^2.79.0"
+    "request": "^2.79.0",
+    "serve-favicon": "^2.3.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^1.0.0",

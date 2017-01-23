@@ -9,10 +9,16 @@
     }
     .segment.article:hover {
         background-color: #f5f5f5;
+        cursor: pointer;
+    }
+    .meta {
+        float: right;
+        color: #cac8c8;
+        font-style: italic;         
     }
 </style>
 
-<div class="ui segments">
+<div class="ui segments" style="margin-top:0px">
 
     {{#each articles}}
     <div 
@@ -20,6 +26,10 @@
         onclick="ConfigArticles.goTo({{id}})">
         <div class="heading">
             <h3 class="ui header">{{title}}</h2>
+            <div class="meta">
+                {{formattedDate}}
+            </div>
+
             {{!--
             <div class="ui mini icon button">
                 <i class="edit icon"></i>
