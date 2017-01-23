@@ -22,6 +22,7 @@ if (process.env.APP_DEMO_MODE) {
         initSession,
         (req, res, next) => {
             ; (req.session || {}).userId = Number(process.env.APP_DEMO_MODE)
+            ; (req.session || {}).userName = 'Demo User'
             next()
         }
     ])
