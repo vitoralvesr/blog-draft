@@ -20,6 +20,7 @@ import roles = require('./common/roles')
 import config = require('./common/config')
 import '@common/mail' //init
 import favicon = require('serve-favicon')
+import compression = require('compression')
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
@@ -74,6 +75,7 @@ database.init().then(() => {
     app.use(favicon(`${__dirname}/../public/favicon/favicon.ico`))
 
     app.use('/assets',
+        compression() ,    
         express.static('../public', process.env.NODE_ENV === 'production' ? 
             { maxAge : '1d' } :
             {}
