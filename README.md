@@ -11,7 +11,7 @@ Achieve that by installing [the miraculous windows build tools](https://github.c
 
 - `npm i`  
 - Run the database dump  (`init.sql`)
-- Set the required environment variables (on VS code debugger, or creating a sh script, or using pm2, etc)  
+- Set the required environment variables (on your editor debugger, or create a sh script, or use pm2, etc)  
   - you may just put placeholders on the email server ones.
 - Compile typescript (`npm start tsc`)
 
@@ -19,7 +19,7 @@ Should be it. Run `node .`
 
 **Current main caveats**
 
-I didn't test it in _Firefox_ or _Safari_. It's in the queue. It's 100% certain that it will not work on them.
+I didn't test it in _Firefox_ or _Safari_. Thats's in the queue. It's 100% certain that it will not work on them.
 
 # Configurable environment variables
 
