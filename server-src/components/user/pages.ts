@@ -9,6 +9,7 @@ import { config } from '@common/config'
 user.get('/login', (req, res) => {
     if (req.session.userId) return res.redirect('/')
     res.render('v-login', {
+        title : 'Login' ,
         //show new account button if theres no admin user or if the option is enabled
         showNewAccount: config.new_account_button || roles.USER_ADMIN_ID === undefined
     })
