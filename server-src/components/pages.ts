@@ -27,7 +27,8 @@ pages.response = <any>{
             $userName: session.userName,
             $liveReload: process.env.APP_LIVERELOAD > 0,
             $blogTitle: config.main_title,
-            $blogSubtitle: config.main_subtitle
+            $blogSubtitle: config.main_subtitle,
+            $currentUrl : process.env.APP_BASE_URL + this.req.originalUrl
         })
         let url = this.req.originalUrl.split('/').slice(1)
         if (path.charAt(0) === '@')
