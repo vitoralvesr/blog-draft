@@ -20,7 +20,6 @@ export var initSession = expressSession({
 export var authGate = (req, res, next) => {
     if (process.env.APP_DEMO_MODE) {
         req.session.userId = Number(process.env.APP_DEMO_MODE)
-        return next()
     }
     if (req.session.userId) return next()
     return next(ono({statusCode:400, code:'UNAUTHORIZED'}, 'Não autorizado.'))
