@@ -13,10 +13,12 @@
 
 
 -- Dumping database structure for blog-draft
+DROP DATABASE IF EXISTS `blog-draft`;
 CREATE DATABASE IF NOT EXISTS `blog-draft` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `blog-draft`;
 
 -- Dumping structure for table blog-draft.articles
+DROP TABLE IF EXISTS `articles`;
 CREATE TABLE IF NOT EXISTS `articles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user` int(11) unsigned NOT NULL,
@@ -29,23 +31,26 @@ CREATE TABLE IF NOT EXISTS `articles` (
   `seq` int(11) DEFAULT NULL,
   `title` varchar(100) NOT NULL,
   `content` text,
+  `trimmed_content` varchar(400) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_articles_users:user` (`user`),
   CONSTRAINT `fk_articles_users:user` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table blog-draft.config
+DROP TABLE IF EXISTS `config`;
 CREATE TABLE IF NOT EXISTS `config` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL,
   `value` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=104 DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 -- Dumping structure for table blog-draft.event_tokens
+DROP TABLE IF EXISTS `event_tokens`;
 CREATE TABLE IF NOT EXISTS `event_tokens` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user` int(11) NOT NULL,
@@ -54,10 +59,11 @@ CREATE TABLE IF NOT EXISTS `event_tokens` (
   `token` varchar(100) NOT NULL,
   `params` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table blog-draft.roles
+DROP TABLE IF EXISTS `roles`;
 CREATE TABLE IF NOT EXISTS `roles` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
@@ -68,6 +74,7 @@ CREATE TABLE IF NOT EXISTS `roles` (
 
 -- Data exporting was unselected.
 -- Dumping structure for table blog-draft.sessions
+DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE IF NOT EXISTS `sessions` (
   `session_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `expires` int(11) unsigned NOT NULL,
@@ -77,6 +84,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 
 -- Data exporting was unselected.
 -- Dumping structure for table blog-draft.users
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `role` int(11) unsigned NOT NULL,
@@ -89,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `users_email` (`email`),
   KEY `users_roles:role` (`role`),
   CONSTRAINT `users_roles:role` FOREIGN KEY (`role`) REFERENCES `roles` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
