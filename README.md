@@ -29,6 +29,7 @@ I didn't test it in _Firefox_ or _Safari_. Thats's in the queue. It's 100% certa
 
     APP_BASE_URL *
     APP_LIVERELOAD -- adds the livereload header
+    APP_DEMO_MODE  -- specify user id to be always logged in
 
 ## Email
 
