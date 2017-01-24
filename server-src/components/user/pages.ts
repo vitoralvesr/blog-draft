@@ -17,7 +17,7 @@ user.get('/login', (req, res) => {
 
 
 user.get('/create', (req, res) => {
-    var send: any = {}
+    var send: any = { title : 'Novo usuário' }
     if (roles.USER_ADMIN_ID === undefined) send.message = {
         title: 'Primeiro acesso',
         content: 'Ainda não existem usuários registrados. ' +

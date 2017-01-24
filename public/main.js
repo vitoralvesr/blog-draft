@@ -6,84 +6,83 @@
 
 
     var _submitting = false
-    /**
-     * Expects declared in the form element
-     *   - data-url
-     *   - data-method
-     *   - data-redirect-to
-     *
-     * @param {HTMLFormElement} formEl
-     */
-    function submitForm( formEl, opts ) {
-        opts = opts || {}
-        event.preventDefault()
-        if (!$(formEl).form('is valid')) return
-        if (_submitting) return
 
-        if (!(
-            document.activeElement.tagName === 'INPUT' && 
-            document.activeElement.type === 'submit')) {
-            return
-        }
+    exports.jsonForm = jsonForm    
+    function jsonForm(formEl, opts) {
 
-        _submitting = true
-        var formItems =
-            Array.from(document.forms.namedItem(formEl.name).elements)
-                .filter( element => {
-                    if (element.tagName === 'INPUT' && element.type === 'submit') return false
-                    return ['INPUT', 'SELECT', 'TEXTAREA'].indexOf(element.tagName) != -1
-                })
 
-        let objectToSend = formItems.reduce((previous, current) => {
-            previous[current.name] = current.value
-            if (current.tagName === 'INPUT' && current.type === 'checkbox') {
-                previous[current.name] = current.checked ? '1' :  '0'
+        //override all submit events on this shit
+        formEl.onsubmit = function (event) { 
+            opts = opts || {}
+            event.preventDefault()
+            if (!$(formEl).form('is valid')) return
+            if (_submitting) return
+
+            if (!(
+                document.activeElement.tagName === 'INPUT' && 
+                document.activeElement.type === 'submit')) {
+                return false
             }
-            return previous
-        }, {})        
 
-        if (opts.editData) objectToSend = opts.editData(objectToSend)
+            _submitting = true
+            var formItems =
+                Array.from(formEl.elements)
+                    .filter( element => {
+                        if (element.tagName === 'INPUT' && element.type === 'submit') return false
+                        return ['INPUT', 'SELECT', 'TEXTAREA'].indexOf(element.tagName) != -1
+                    })
 
-        let submitBtn = formEl.querySelector('input[type="submit"]')
-        $(submitBtn).removeClass('primary')
-        let prevValue = submitBtn.value
-        submitBtn.value = 'Enviando'
+            let objectToSend = formItems.reduce((previous, current) => {
+                previous[current.name] = current.value
+                if (current.tagName === 'INPUT' && current.type === 'checkbox') {
+                    previous[current.name] = current.checked ? '1' :  '0'
+                }
+                return previous
+            }, {})        
 
-        let _hidebtnfn = () => {
-            formEl.querySelector('.ui.message.error').style.display = 'none'
-        }
-        ajaxRequest({
-            method : formEl.dataset.method,
-            url : formEl.dataset.url ,
-            body : objectToSend
-        }).then(() => {
-            submitBtn.value = 'Salvo!'
-            $(submitBtn).addClass('primary')            
-            setTimeout(function () { 
+            if (opts.editData) objectToSend = opts.editData(objectToSend)
+
+            let submitBtn = formEl.querySelector('input[type="submit"]')
+            $(submitBtn).removeClass('primary')
+            let prevValue = submitBtn.value
+            submitBtn.value = 'Enviando'
+
+            let _hidebtnfn = () => {
+                formEl.querySelector('.ui.message.error').style.display = 'none'
+            }
+            ajaxRequest({
+                method : opts.method || formEl.dataset.method,
+                url : opts.url || formEl.dataset.url ,
+                body : objectToSend
+            }).then(() => {
+                submitBtn.value = 'Salvo!'
+                $(submitBtn).addClass('primary')            
+                setTimeout(function () { 
+                    submitBtn.value = prevValue
+                }, 2000)
+                _submitting = false            
+                if (opts.redirectTo || formEl.dataset.redirectTo) {
+                    window.location.pathname = formEl.dataset.redirectTo
+                    return
+                }
+            })
+            .catch( function(err) {
+                _submitting = false
                 submitBtn.value = prevValue
-            }, 2000)
-            _submitting = false            
-            if (formEl.dataset.redirectTo) {
-                window.location.pathname = formEl.dataset.redirectTo
-                return
-            }
-        })
-        .catch( function(err) {
-            _submitting = false
-            submitBtn.value = prevValue
-            let innerp = formEl.querySelector('.ui.message.error > p')
-            if (!innerp) {
-                innerp = document.createElement('P')
-                formEl.querySelector('.ui.message.error').appendChild(innerp)
-            }
-            innerp.innerText = (err.error && err.error.message) || err.message || err
-            formEl.querySelector('.ui.message.error').style.display = 'block'
-            let hideBtn = formEl.querySelector('.ui.message.error > .close.icon')
-            hideBtn && hideBtn.addEventListener('click', _hidebtnfn)
-            throw err
-        })
+                let innerp = formEl.querySelector('.ui.message.error > p')
+                if (!innerp) {
+                    innerp = document.createElement('P')
+                    formEl.querySelector('.ui.message.error').appendChild(innerp)
+                }
+                innerp.innerText = (err.error && err.error.message) || err.message || err
+                formEl.querySelector('.ui.message.error').style.display = 'block'
+                let hideBtn = formEl.querySelector('.ui.message.error > .close.icon')
+                hideBtn && hideBtn.addEventListener('click', _hidebtnfn)
+                throw err
+            })
+            return false            
+        }
     }
-    exports.submitForm = submitForm
 
 
     function populateForm(formEl, valuesObj) {
@@ -243,13 +242,13 @@
                     "name": "side-by-side",
                     "action": SimpleMDE.toggleSideBySide,
                     "title": "Previsão",
-                    "className": "fa fa-eye no-disable no-mobile"
+                    "className": "fa fa-eye no-disable"
                 },
                 {
                     "name": "fullscreen",
                     "action": SimpleMDE.toggleFullScreen,
                     "title": "Tela cheia",
-                    "className": "fa fa-arrows-alt no-disable"
+                    "className": "fa fa-arrows-alt"
                 },
                 {
                     "name": "guide",
@@ -274,7 +273,7 @@
 
     $(function() {
         $('pre').addClass('ui segment')
-        $('.ui.menu .ui.dropdown.item').dropdown()        
+        $('.ui.menu .ui.dropdown.item').dropdown()           
     })
 
 

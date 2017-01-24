@@ -6,8 +6,7 @@
         name="newUserForm"
         data-url="/api/user/create"
         data-method="POST"
-        data-redirect-to="/"
-        onSubmit="Site.submitForm(this)">
+        data-redirect-to="/">
 
         <div class="ui message error">
             <i class="close icon"></i>
@@ -50,5 +49,6 @@ $(function(){
             email : 'email'
         }
     })
+    Site.jsonForm(newUserForm)
 })
 </script>

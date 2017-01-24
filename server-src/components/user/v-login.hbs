@@ -6,8 +6,7 @@
         name="loginForm"
         data-url="/api/user/login"
         data-method="POST"
-        data-redirect-to="/"
-        onSubmit="Site.submitForm(this)">
+        data-redirect-to="/">
 
         <div class="ui message error">
             <i class="close icon"></i>
@@ -40,3 +39,8 @@
     </form> 
 
 </div>
+
+
+<script>
+    Site.jsonForm(loginForm)
+</script>

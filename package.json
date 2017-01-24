@@ -7,7 +7,8 @@
   "author": "",
   "scripts": {
     "livereload": "livereload ./server-src -d -e \"hbs\"",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "tsw": "tsc -w"
   },
   "dependencies": {
     "bcrypt": "^1.0.2",

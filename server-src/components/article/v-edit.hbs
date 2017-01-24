@@ -90,9 +90,11 @@ $(function() {
         })
     }
 
-    articleForm.addEventListener('submit', function() {
-        articleForm.content.innerHTML = editor.value()
-        Site.submitForm(this)
+    Site.jsonForm(articleForm, {
+        editData : function(data) {
+            data.content = editor.value()
+            return data
+        }
     })
 
 })

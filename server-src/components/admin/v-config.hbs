@@ -71,14 +71,13 @@
 
 <script>
     var exported = function() {
-        configForm.addEventListener('submit', function() {
-            Site.submitForm(configForm, {
-                editData : function(data) {
-                    data.sanitize_markdown = (data.allow_html == true) ? '0' : '1'
-                    return data
-                }
-            })
+        Site.jsonForm(configForm, {
+            editData : function(data) {
+                data.sanitize_markdown = (data.allow_html == true) ? '0' : '1'
+                return data
+            }
         })
+
         $('.ui.checkbox').checkbox()
         $('i.help').popup()
         var dataz = {{{config}}};
