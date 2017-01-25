@@ -3,13 +3,13 @@
     {{#unless @root.$atRoot}}
         <a class="ui item" href="/">
             <i class="home icon"></i>
-            Início
+            <span class="hide-mobile">Início</span>
         </a>
     {{/unless}}
     <div class="right menu">
         <a class="ui item" href="/pages/article/new">
             <i class="write square icon"></i>
-            Novo post
+            <span class="hide-mobile">Novo post</span>
         </a>
         <a class="ui dropdown item">
             {{$userName}}

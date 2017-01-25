@@ -1,5 +1,5 @@
 /* eslint-env browser */
-/* global $, SimpleMDE */
+/* global $, SimpleMDE, editor */
 
 (function() {
     var exports = {}
@@ -173,92 +173,7 @@
             element: element,
             spellChecker: false,
             renderingConfig: { codeSyntaxHighlighting: true },
-            toolbar: [
-                {
-                    "name": "bold",
-                    "action": SimpleMDE.toggleBold,
-                    "title": "Negrito",
-                    "className": "fa fa-bold"
-                },
-                {
-                    "name": "italic",
-                    "action": SimpleMDE.toggleItalic,
-                    "title": "Itálico",
-                    "className": "fa fa-italic"
-                },
-                {
-                    "name": "strikethrough",
-                    "action": SimpleMDE.toggleStrikethrough,
-                    "title": "Tachado",
-                    "className": "fa fa-strikethrough"
-                },
-                "|",
-                {
-                    "name": "heading",
-                    "action": SimpleMDE.toggleHeadingSmaller,
-                    "title": "Título",
-                    "className": "fa fa-header"
-                },
-                {
-                    name: "quote",
-                    action: SimpleMDE.toggleBlockquote,
-                    title: "Citação",
-                    "className" : "fa fa-quote-left no-mobile"
-                } ,
-                "|",
-                {
-                    "name": "unordered-list",
-                    "action": SimpleMDE.toggleUnorderedList,
-                    "title": "Tópicos",
-                    "className": "fa fa-list-ul"
-                },
-                {
-                    "name": "ordered-list",
-                    "action": SimpleMDE.toggleOrderedList,
-                    "title": "Lista numerada",
-                    "className": "fa fa-list-ol"
-                },
-                "|",
-                {
-                    "name": "link",
-                    "action": SimpleMDE.drawLink,
-                    "title": "Link",
-                    "className": "fa fa-link"
-                },
-                {
-                    "name": "image",
-                    "action": SimpleMDE.drawImage,
-                    "title": "Imagem",
-                    "className": "fa fa-picture-o"
-                },
-                {
-                    "name": "table",
-                    "action": SimpleMDE.drawTable,
-                    "title": "Tabela",
-                    "className": "fa fa-table"
-                },
-                "|" ,
-                {
-                    "name": "side-by-side",
-                    "action": SimpleMDE.toggleSideBySide,
-                    "title": "Previsão",
-                    "className": "fa fa-eye no-disable"
-                },
-                {
-                    "name": "fullscreen",
-                    "action": SimpleMDE.toggleFullScreen,
-                    "title": "Tela cheia",
-                    "className": "fa fa-arrows-alt"
-                },
-                {
-                    "name": "guide",
-                    "action": function () { 
-                        window.open('/assets/markdown-guide.html')
-                    },
-                    "title": "Ajuda",
-                    "className": "fa fa-question-circle no-mobile"
-                }
-            ]
+            toolbar: undefined
         }
     }
 

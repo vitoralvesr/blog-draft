@@ -7,7 +7,7 @@
 
     <h1 style="display:inline-block">{{title}}</h1>
 
-    <div style="display:inline-block;float:right;">
+    <div style="display:inline-block;float:right;" class="hide-mobile">
         <div class="ui message" style="display:flex;align-items:center;">
             <p style="flex-grow:1;margin:0 15px 0 0;">
                 Os posts usam o <span style="font-weight:bold">markdown</span> para formatação.
@@ -82,6 +82,7 @@ $(function(){
     var editor = new SimpleMDE(
         Site.defaultMDEConfig(articleForm.content)
     )
+    window.editor = editor
 
     setTimeout(function(){
         Site.fitHeight(document.querySelector('.CodeMirror'), 100)
@@ -137,6 +138,14 @@ $(function(){
             })
         })
 
+
+    Site.jsonForm(articleForm, {
+        editData : function(data) {
+            data.content = editor.value()
+            return data
+        }
+    })    
+
     articleForm.addEventListener('submit', function(event) {
         let mandatory = ['title', 'source']
         if (this.source.value == 'git') mandatory.push('githubUser', 'githubRepo', 'githubPath')
@@ -160,15 +169,31 @@ $(function(){
             $('html, body').animate({scrollTop:0},1000);
             return
         }
-
-
-        Site.jsonForm(articleForm, {
-            editData : function(data) {
-                data.content = editor.value()
-                return data
-            }
-        })
-        
     })
+
+    
+
+    if (window.innerWidth < 700) {
+        //custom toolbar options were giving me trouble. Monkey-patch it.
+        var $toolbar = $('.editor-toolbar')
+        var $left = $toolbar.find('.fa.fa-quote-left')
+        $left.next().remove()
+        $left.next().remove()
+        $left.remove()
+        $toolbar.find('i.separator').remove()
+
+        var $disable = $toolbar.find('.fa.fa-eye.no-disable')
+        $disable.next().remove()
+        var $newEl = $(
+            '<a title="Fullscreen" tabindex="-1" class="fa fa-arrows-alt no-disable"></a>'
+        ).click(function(event) {
+            editor.toggleFullScreen()
+        })
+        $toolbar.find('.fa.fa-bold')
+            .before($disable)
+            .before($newEl)
+            .before('<i class="separator">|</i>')
+        editor.toolbarElements.fullscreen = $newEl[0]
+    }
 })
 </script>
