@@ -97,5 +97,29 @@ $(function() {
         }
     })
 
+
+   if (window.innerWidth < 700) {
+        //custom toolbar options were giving me trouble. Monkey-patch it.
+        var $toolbar = $('.editor-toolbar')
+        var $left = $toolbar.find('.fa.fa-quote-left')
+        $left.next().remove()
+        $left.next().remove()
+        $left.remove()
+        $toolbar.find('i.separator').remove()
+
+        var $disable = $toolbar.find('.fa.fa-eye.no-disable')
+        $disable.next().remove()
+        var $newEl = $(
+            '<a title="Fullscreen" tabindex="-1" class="fa fa-arrows-alt no-disable"></a>'
+        ).click(function(event) {
+            editor.toggleFullScreen()
+        })
+        $toolbar.find('.fa.fa-bold')
+            .before($disable)
+            .before($newEl)
+            .before('<i class="separator">|</i>')
+        editor.toolbarElements.fullscreen = $newEl[0]
+    }
+
 })
 </script>
