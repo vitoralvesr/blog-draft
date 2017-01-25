@@ -57,7 +57,7 @@ pages.get('/:pageId/edit', auth.authGate, async (req, res, next) => {
         if (!rows.length) throw Error('Artigo não existe.')
         let article = rows[0]
         res.render('v-edit', { 
-            title: 'Editando artigo' ,
+            title: 'Editando artigo ::' + article.title ,
             article
         })
     } catch (err) {
