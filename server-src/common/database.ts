@@ -1,6 +1,7 @@
 import mysql = require('mysql2/promise')
 import mysqlLegacy = require('mysql2')
 import changeCase = require('change-case')
+import mailer = require('./mail')
 
 export var connection: MySql.Connection
 //express-session wont work with mysql2/promise version...
@@ -18,6 +19,20 @@ export async function init() {
     connection = await mysql.createConnection(connectionParams);
     connection.connection.config.namedPlaceholders = true;
     legacyConnection = await mysqlLegacy.createConnection(connectionParams)
+    connection.connection.on('error', async function (err) {
+        $log('mysql err code', err && err.code)
+        if (String(err.message).endsWith('closed state')) {
+            console.error('mysql closed state error')
+            mailer({
+                email: 'wkrueger128@gmail.com',
+                subject: 'Mysql error on server',
+                content: JSON.stringify(err)
+            })
+            var conn = <any>connection
+            await conn.close()
+            await init()
+        }
+    })
 }
 
 

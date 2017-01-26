@@ -41,6 +41,7 @@ declare namespace MySql {
         
         connection: {
             config: any
+            on : any            
         };
     }
 }
