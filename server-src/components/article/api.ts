@@ -66,6 +66,18 @@ api.delete('/:id', async (req, res, next) => {
     }
 })
 
+
+api.get('/:id', async (req, res, next) => {
+    try {
+        $checkParams(req.params, 'id')
+        let [rows] = await db.execute('SELECT * FROM articles WHERE id = ?', [req.params.id])
+        res.status(200).send({ article : rows[0] })
+    } catch (err) {
+        next(err)
+    }
+ })
+
+
 /*
 api.post('/verify-git', async (req, res, next) => { 
     try {
