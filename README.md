@@ -4,6 +4,10 @@
 - node v6+. v4 maybe?
 - mysql
 
+**Demo**
+
+Demo version (no users/authentication) running at [this $1 domain](https://www.champison.top).
+
 **Quickstart**
 
 On windows you need a working node-gyp for building bcrypt.
