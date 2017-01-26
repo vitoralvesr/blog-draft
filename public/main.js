@@ -1,5 +1,5 @@
 /* eslint-env browser */
-/* global $, SimpleMDE, editor */
+/* global $ */
 
 (function() {
     var exports = {}

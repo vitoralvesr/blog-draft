@@ -74,13 +74,11 @@ database.init().then(() => {
 
     app.use(favicon(`${__dirname}/../public/favicon/favicon.ico`))
 
-    app.use('/assets',
-        compression() ,    
-        express.static('../public', process.env.NODE_ENV === 'production' ? 
-            { maxAge : '1d' } :
-            {}
-        )
-    )
+    app.use(compression())
+
+    var staticopts =  process.env.NODE_ENV === 'production' ? { maxAge : '1d' } : {}   
+    app.use('/assets',express.static('../public', staticopts))
+    app.use('/media', express.static('../public', staticopts))
 
     const session = require('./common/auth-mw')
     
