@@ -10,19 +10,26 @@
     exports.jsonForm = jsonForm    
     function jsonForm(formEl, opts) {
 
+        var submitClicked = false        
+        $('input[type=submit]').on('click', function () {
+            submitClicked = true
+        })        
+
 
         //override all submit events on this shit
         formEl.onsubmit = function (event) { 
             opts = opts || {}
             event.preventDefault()
+
+            var prevstate = submitClicked
+            submitClicked = false
+            if (!prevstate) return false
+
             if (!$(formEl).form('is valid')) return
             if (_submitting) return
 
-            if (!(
-                document.activeElement.tagName === 'INPUT' && 
-                document.activeElement.type === 'submit')) {
-                return false
-            }
+            if(! $('input[type=submit][clicked=true]').length ) return false
+
 
             _submitting = true
             var formItems =
@@ -186,9 +193,9 @@
 
     window.Site = exports
 
-    $(function() {
+    $(function () {
         $('pre').addClass('ui segment')
-        $('.ui.menu .ui.dropdown.item').dropdown()           
+        $('.ui.menu .ui.dropdown.item').dropdown()
     })
 
 
