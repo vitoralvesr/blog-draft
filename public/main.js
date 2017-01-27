@@ -28,9 +28,6 @@
             if (!$(formEl).form('is valid')) return
             if (_submitting) return
 
-            if(! $('input[type=submit][clicked=true]').length ) return false
-
-
             _submitting = true
             var formItems =
                 Array.from(formEl.elements)

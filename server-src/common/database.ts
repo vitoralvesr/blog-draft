@@ -21,7 +21,9 @@ export async function init() {
     legacyConnection = await mysqlLegacy.createConnection(connectionParams)
     connection.connection.on('error', async function (err) {
         $log('mysql err code', err && err.code)
-        if (String(err.message).endsWith('closed state')) {
+        var closedState = String(err.message).endsWith('closed state')
+        var connectionLost = String(err.message).startsWith('Connection lost')
+        if (closedState || connectionLost) {
             console.error('mysql closed state error')
             mailer({
                 email: 'wkrueger128@gmail.com',
