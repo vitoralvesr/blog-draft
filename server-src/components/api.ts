@@ -15,6 +15,7 @@ api.use(auth.authGate)
 
 api.use('/article', require('./article/api'))
 api.use('/admin', require('./admin/api'))
+api.use('/file', require('./file/api'))
 
 
 api.use( (error, req, res, next) => {
