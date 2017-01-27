@@ -71,7 +71,7 @@ files.delete('/:filename', async (req, res, next) => {
         var files = await fileList()
         if (files.indexOf(filename) !== -1)
             throw ono('Este arquivo não existe.')        
-        await $promisify(fs.unlink(path.resolve( MEDIA_FOLDER, filename )))
+        await $promisify(fs.unlink, path.resolve( MEDIA_FOLDER, filename ) )
         res.status(200).send({ status : 'OK' })
     } catch (err) {
         next(err)
