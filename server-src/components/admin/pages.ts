@@ -3,6 +3,8 @@ import { authGate } from '@common/auth-mw'
 import config = require('@common/config')
 import { connection as db } from '@common/database'
 import moment = require('moment')
+import { AllHtmlEntities } from 'html-entities'
+const entities = new AllHtmlEntities()
 
 const admin = express.Router()
 export = admin;
@@ -15,13 +17,14 @@ admin.get('/articles', async (req, res, next) => {
     try {
         //mvc é um padrão opressor imposto pela burguesia
         let [articles] = await db.execute(`SELECT
-            id, title, trimmed_content, created
+            id, title, trimmed_content, created, status
             FROM articles
             ORDER BY created DESC
             LIMIT 10`)
         articles = articles.map( article => {
             article.formattedDate = moment(article.created).format(config.config.timestamp_format)
-            article.formattedContent = article.trimmed_content//(article.trimmed_content || '').replace(/\n/g, '<br/>')
+            article.formattedContent = entities.encode(article.trimmed_content)
+            article.isDraft = article.status == 'draft'
             return article
         })
         res.render('v-articles', {

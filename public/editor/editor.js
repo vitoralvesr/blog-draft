@@ -176,6 +176,42 @@
     }
 
 
+    exports.initSubmitter = function ($element, isDraft, form) {
+        var $submit = $element.find('.active-submit')
+        var $dropdown = $element.find('.ui.floating.dropdown')
+        var selected
+        
+        if (isDraft) toDraft()
+        else toPublish()
+
+
+        $element.find('.item[data-id=publish]').on('click', toPublish)
+        $element.find('.item[data-id=draft]').on('click', toDraft)
+
+
+        function toDraft() {
+            selected = 'draft'
+            form.elements.status.value = selected
+            $submit.add($dropdown)
+                .removeClass('primary')    
+                .addClass('teal')
+            $submit.html('Salvar rascunho')
+        }
+
+        function toPublish() {
+            selected = 'published'
+            form.elements.status.value = selected            
+            $submit.add($dropdown)
+                .removeClass('teal')    
+                .addClass('primary')
+            $submit.html('Publicar')
+        }
+
+    }
+
+
+
+
     window.Editor = exports
 
 })()

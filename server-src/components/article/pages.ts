@@ -18,6 +18,7 @@ pages.get('/list', async (req, res, next) => {
     try {
         let [rows] = await db.connection.execute(`SELECT articles.*, users.display_name
             FROM articles LEFT JOIN users ON articles.user = users.id
+            WHERE articles.status = "published"
             ORDER BY created DESC`
         )
         var all = rows.map(async row => {

@@ -14,19 +14,20 @@
     .meta {
         float: right;
         color: #cac8c8;
-        font-style: italic;         
+        font-style: italic;
     }
 </style>
 
 <div class="ui segments" style="margin-top:0px">
 
     {{#each articles}}
-    <div 
+    <div
         class="ui segment article"
         onclick="ConfigArticles.goTo({{id}})">
         <div class="heading">
             <h3 class="ui header">{{title}}</h2>
             <div class="meta">
+                {{#if isDraft}}<div class="ui teal horizontal label">Rascunho</div>{{/if}}
                 {{formattedDate}}
             </div>
 
@@ -37,7 +38,7 @@
             </div>
             --}}
         </div>
-        <p style="white-space:pre-wrap;">{{ formattedContent }}</p>
+        <p style="white-space:pre-wrap;">{{{ formattedContent }}}</p>
     </div>
     {{/each}}
 

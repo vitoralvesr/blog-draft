@@ -47,12 +47,25 @@
             <textarea name="content" id="mdContent">{{article.content}}</textarea>
         </div>
 
-        <input type="submit" class="ui button primary" value="Salvar"/>
+        <input type="hidden" name="status" value=""></input>
+
+        <div class="ui buttons submitter">
+            <div class="ui button active-submit"></div>
+            <div class="ui floating dropdown icon button">
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="item" data-id="publish"><i class="check icon"></i>Publicar</div>
+                    {{#if article.draft}} <div class="item" data-id="draft"><i class="hide icon"></i>Salvar como rascunho</div>{{/if}}
+                </div>
+            </div>
+        </div>
+
+        <!-- <input type="submit" class="ui button primary" value="Salvar"/> -->
         <a href="#" class="ui button" onclick="window.history.go(-1)">Cancelar</a>
         <div
             onclick="deletePost()"
             class="ui labeled icon button basic right floated">
-            <i class="icon delete"></i>
+            <i class="icon trash"></i>
             Excluir
         </a>
 
@@ -66,6 +79,8 @@ $(function() {
         Editor.defaultMDEConfig(document.getElementById('mdContent'))
     )
     Editor.editorHack(editor)    
+    var isDraft = '{{article.status}}' == 'draft'
+    Editor.initSubmitter($('.submitter'), isDraft, articleForm)
 
 
     window.deletePost = function() {

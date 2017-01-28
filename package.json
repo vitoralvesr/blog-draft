@@ -1,6 +1,6 @@
 {
   "name": "chat-example",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "server-dist/index.js",
   "repository": "",
@@ -21,6 +21,7 @@
     "express-session": "^1.14.2",
     "glob": "^7.1.1",
     "highlight.js": "git+https://github.com/isagalaev/highlight.js.git",
+    "html-entities": "^1.2.0",
     "lodash": "^4.17.4",
     "marked": "^0.3.6",
     "mkdirp": "^0.5.1",
@@ -40,6 +41,7 @@
     "@types/express-handlebars": "0.0.29",
     "@types/express-session": "0.0.32",
     "@types/glob": "^5.0.30",
+    "@types/html-entities": "^1.2.15",
     "@types/lodash": "^4.14.51",
     "@types/mkdirp": "^0.3.29",
     "@types/node": "^7.0.4",

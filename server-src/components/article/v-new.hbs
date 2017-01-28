@@ -70,8 +70,22 @@
             <textarea name="content">{{article.content}}</textarea>
         </div>
 
-        <input type="submit" class="ui button primary" value="Salvar"/>
-        <a href="/" class="ui button">Cancelar</a>
+        <input type="hidden" name="status" value=""></input>
+
+
+        <div class="ui buttons submitter">
+            <div class="ui button active-submit"></div>
+            <div class="ui floating dropdown icon button">
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="item" data-id="publish"><i class="check icon"></i>Publicar</div>
+                    <div class="item" data-id="draft"><i class="hide icon"></i>Salvar como rascunho</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- <input type="submit" class="ui button primary" value="Salvar"/> -->
+        <a href="#" class="ui button" onclick="window.history.go(-1)">Cancelar</a>
 
     </form>
 </div>
@@ -84,6 +98,7 @@ $(function(){
     )
     window.editor = editor
     Editor.editorHack(editor)
+    Editor.initSubmitter($('.submitter'), true, articleForm)
   
 
     //git source extra field

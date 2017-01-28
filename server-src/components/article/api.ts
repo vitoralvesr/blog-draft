@@ -6,13 +6,14 @@ import { connection as db, insert } from '@common/database'
 api.put('/:id?',  async (req, res, next) => {
     try {
         $checkParams(req.body, 'id')
+        req.body.status = req.body.status || 'published'        
         //var provider = await ArticleProvider.init(req.body.id)
         //await provider.update(req.body)
         let trimmed = (req.body.content||'').substr(0,380) + ' ...'
         await db.execute(
-            `UPDATE articles SET title = ?, content = ?, trimmed_content = ?
+            `UPDATE articles SET title = ?, content = ?, trimmed_content = ?, status = ?
             WHERE id = ?`,
-            [req.body.title||'', req.body.content||'', trimmed, req.body.id||'']
+            [req.body.title || '', req.body.content || '', trimmed, req.body.status, req.body.id || '' ]
         )
         res.status(200).send({ status: 'ok' })
     } catch (err) {
@@ -24,6 +25,7 @@ api.put('/:id?',  async (req, res, next) => {
 api.post('/', async (req, res, next) => {
     try {
         $checkParams(req.body, 'title', 'source')
+        req.body.status = req.body.status || 'published'
         if (req.body.source === 'git')
             $checkParams(req.body, 'githubUser', 'githubRepo', 'githubPath')
         req.body.user = Number(req.session.userId)
@@ -31,7 +33,7 @@ api.post('/', async (req, res, next) => {
         await insert({
             into: 'articles',
             fields: ['source', 'githubUser', 'githubRepo', 'githubPath',
-                'title', 'content', 'user', 'trimmed_content'],
+                'title', 'content', 'user', 'trimmed_content', 'status'],
             data: req.body,
             camelCase : true
         })

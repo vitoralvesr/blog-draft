@@ -15,6 +15,12 @@
             submitClicked = true
         })
 
+        $('.active-submit').on('click', function () {
+            submitClicked = true
+            if (event.target !== this) return
+            formEl.onsubmit(event)
+        })
+
 
         //override all submit events on this shit
         formEl.onsubmit = function (event) {
@@ -46,10 +52,11 @@
 
             if (opts.editData) objectToSend = opts.editData(objectToSend)
 
-            let submitBtn = formEl.querySelector('input[type="submit"]')
-            $(submitBtn).removeClass('primary')
+            let submitBtn = event.target
+            $(submitBtn).removeClass('primary teal')
             let prevValue = submitBtn.value
             submitBtn.value = 'Enviando'
+            submitBtn.innerHtml = 'Enviando'
 
             let _hidebtnfn = () => {
                 formEl.querySelector('.ui.message.error').style.display = 'none'
@@ -60,19 +67,23 @@
                 body : objectToSend
             }).then(() => {
                 submitBtn.value = 'Salvo!'
+                submitBtn.innerHTML = 'Salvo!'
                 $(submitBtn).addClass('primary')
                 setTimeout(function () {
                     submitBtn.value = prevValue
                 }, 2000)
                 _submitting = false
+                /*
                 if (opts.redirectTo || formEl.dataset.redirectTo) {
                     window.location.pathname = formEl.dataset.redirectTo
                     return
-                }
+                }*/
+                window.history.go(-1)
             })
             .catch( function(err) {
                 _submitting = false
                 submitBtn.value = prevValue
+                submitBtn.innerHtml = prevValue
                 let innerp = formEl.querySelector('.ui.message.error > p')
                 if (!innerp) {
                     innerp = document.createElement('P')
@@ -169,7 +180,7 @@
             })
             req.open(method, url)
             req.setRequestHeader('content-type', 'application/octet-stream')
-            req.overrideMimeType("application/octet-stream")            
+            req.overrideMimeType("application/octet-stream")
             req.send(body)
         })
     }
@@ -194,7 +205,7 @@
 
     $(function () {
         $('pre').addClass('ui segment')
-        $('.ui.menu .ui.dropdown.item').dropdown()
+        $('.ui.dropdown').dropdown()
     })
 
 
