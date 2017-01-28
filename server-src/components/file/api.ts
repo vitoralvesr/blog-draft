@@ -2,16 +2,37 @@ import express = require('express')
 import mkdirp = require('mkdirp')
 import glob = require('glob')
 import path = require('path')
-import sharp from 'sharp'
-
+const sharp = require('sharp')
 import bodyParser = require('body-parser')
 import ono = require('ono')
 import fs = require('fs')
+import _ = require('lodash')
+
+const rawBodyMw = bodyParser.raw({
+    limit: '4MB'
+})
 
 const MEDIA_FOLDER = path.resolve(process.cwd(), '../user-content/media')
 const THUMBNAIL_FOLDER = path.resolve( MEDIA_FOLDER , 'thumbnails' )
 mkdirp.sync(MEDIA_FOLDER)
 mkdirp.sync(THUMBNAIL_FOLDER)
+
+
+//thumbnail generate
+async function init() {
+    let [[media], [thumbnail]] = await Promise.all([
+        $promisify(glob, MEDIA_FOLDER + '/*.{jpg,jpeg,png,gif}'),
+        $promisify(glob, THUMBNAIL_FOLDER + '/*.{jpg,jpeg,png,gif}')
+    ])
+    media = media.map(file => path.relative(MEDIA_FOLDER, file))
+    thumbnail = thumbnail.map(file => path.relative(THUMBNAIL_FOLDER, file))
+    let find = _.difference(media, thumbnail)
+    if (find.length) $log('Generating', find.length, 'missing media thumbnails.')
+    let all = find.map(thumbnailGenerate)
+    await Promise.all(all)
+    if (find.length) $log('Thumbnails updated.')
+}
+init()
 
 
 const files = express.Router()
@@ -22,7 +43,7 @@ async function fileList() {
     if (__fileList) return __fileList
     var [resp] = await $promisify(glob, `${MEDIA_FOLDER}/*.{jpg,jpeg,png,gif}`)
     __fileList = resp.map(file => {
-        return path.relative(process.cwd() + '/../user-content/media', file)
+        return path.relative(MEDIA_FOLDER, file)
     })
     return __fileList
 }
@@ -40,14 +61,14 @@ files.get('/', async (req, res, next) => {
 
 function fileCheck(filename) {
     let parsed = path.parse(filename)
-    if (['jpg', 'jpeg', 'png', 'gif'].indexOf(parsed.ext) === -1)
+    if (['jpg', 'jpeg', 'png', 'gif'].indexOf(parsed.ext.toLowerCase().substr(1)) === -1)
         throw ono('Extensão não suportada.')    
-    if (filename.indexOf('/') !== -1 || filename.indexOf('..') !== -1 || filename.indexOf('\\') !== -1)        
+    if (filename.indexOf('/') !== -1 || filename.startsWith('..') || filename.indexOf('\\') !== -1)        
         throw ono('Subpastas não são suportadas no momento.')
 }
 
 
-var uploadfn : express.RequestHandler = async (req, res, next) {
+var uploadfn : express.RequestHandler = async (req, res, next) => {
     try {
         var { filename } = req.params
         fileCheck(filename)
@@ -58,7 +79,7 @@ var uploadfn : express.RequestHandler = async (req, res, next) {
             else throw ono('Um arquivo com o mesmo nome já existe.')
         }
         var img = sharp(req.body)
-        let saveThumb = thumbnail(img, filename)
+        let saveThumb = thumbnailGenerate(filename, img)
         let saveMain = $promisify(fs.writeFile, path.resolve(MEDIA_FOLDER, filename), req.body)
         await Promise.all([saveThumb, saveMain])
         files.push(filename)
@@ -68,17 +89,17 @@ var uploadfn : express.RequestHandler = async (req, res, next) {
     }    
 }
 files.route('/:filename')
-    .post(bodyParser.raw(), uploadfn)
-    .put(bodyParser.raw(), uploadfn)
+    .post(rawBodyMw, uploadfn)
+    .put(rawBodyMw, uploadfn)
     
-    
-async function thumbnail(img, filename) {
-    var imgmeta = await img.metadata()
+
+async function thumbnailGenerate(filename, sharpObj?) {
+    sharpObj = sharpObj || sharp( path.resolve(MEDIA_FOLDER, filename) )
+    var imgmeta = await sharpObj.metadata()
     var limit = 150
     let max = Math.max(imgmeta.width, imgmeta.height)
-    var [neww, newh] = [imgmeta.width / max * limit, imgmeta.height / max * limit]
-    let thumbnail = await img.resize(neww, newh).webp().toBuffer()
-    await $promisify( fs.writeFile, path.resolve( THUMBNAIL_FOLDER, filename) , thumbnail )
+    var [neww, newh] = [Math.ceil(imgmeta.width / max * limit), Math.ceil(imgmeta.height / max * limit)]
+    await sharpObj.resize(neww, newh).toFile( path.resolve( THUMBNAIL_FOLDER, filename) )
 }
 
 

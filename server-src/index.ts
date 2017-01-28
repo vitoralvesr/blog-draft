@@ -79,6 +79,7 @@ database.init().then(() => {
     const staticConf = process.env.NODE_ENV === 'production' ? { maxAge : '1d' } : {}
     app.use('/assets', express.static('../public', staticConf))
     app.use('/media', express.static('../user-content/media', staticConf))
+    app.use('/template-media', express.static('../user-content/template-media', staticConf))    
 
     const session = require('./common/auth-mw')
     

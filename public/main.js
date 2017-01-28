@@ -7,17 +7,17 @@
 
     var _submitting = false
 
-    exports.jsonForm = jsonForm    
+    exports.jsonForm = jsonForm
     function jsonForm(formEl, opts) {
 
-        var submitClicked = false        
+        var submitClicked = false
         $('input[type=submit]').on('click', function () {
             submitClicked = true
-        })        
+        })
 
 
         //override all submit events on this shit
-        formEl.onsubmit = function (event) { 
+        formEl.onsubmit = function (event) {
             opts = opts || {}
             event.preventDefault()
 
@@ -42,7 +42,7 @@
                     previous[current.name] = current.checked ? '1' :  '0'
                 }
                 return previous
-            }, {})        
+            }, {})
 
             if (opts.editData) objectToSend = opts.editData(objectToSend)
 
@@ -60,11 +60,11 @@
                 body : objectToSend
             }).then(() => {
                 submitBtn.value = 'Salvo!'
-                $(submitBtn).addClass('primary')            
-                setTimeout(function () { 
+                $(submitBtn).addClass('primary')
+                setTimeout(function () {
                     submitBtn.value = prevValue
                 }, 2000)
-                _submitting = false            
+                _submitting = false
                 if (opts.redirectTo || formEl.dataset.redirectTo) {
                     window.location.pathname = formEl.dataset.redirectTo
                     return
@@ -84,7 +84,7 @@
                 hideBtn && hideBtn.addEventListener('click', _hidebtnfn)
                 throw err
             })
-            return false            
+            return false
         }
     }
 
@@ -125,10 +125,10 @@
                         }
                     } else {
                         try {
-                            reject(JSON.parse(req.responseText))    
+                            reject(JSON.parse(req.responseText))
                         } catch(e) {
                             reject({ error : Error(req.responseText)})
-                        }                        
+                        }
                     }
                 })
             } else {
@@ -152,9 +152,27 @@
                     reject({ error : Error(req.responseText)})
                 }
             })
-        })        
+        })
     }
     exports.ajaxHtml = ajaxHtml
+
+
+    exports.ajaxSendRaw = function(method, url, body) {
+        return new Promise(function (resolve, reject) {
+            let req = new XMLHttpRequest()
+            req.addEventListener('load', function() {
+                if (req.statusText == 'OK') {
+                    return resolve(req.responseText)
+                } else {
+                    reject({ error : Error(req.responseText)})
+                }
+            })
+            req.open(method, url)
+            req.setRequestHeader('content-type', 'application/octet-stream')
+            req.overrideMimeType("application/octet-stream")            
+            req.send(body)
+        })
+    }
 
 
     exports.findParentField = function(element) {

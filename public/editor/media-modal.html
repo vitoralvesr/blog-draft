@@ -1,9 +1,21 @@
 <div class="ui modal" id="globalModal">
     <div class="header">
         Adicionar imagem
+        <div class="ui labeled icon button"
+                id="uploadButton"
+                onclick="Editor.uploadButton()"
+                style="float:right;position:relative;bottom:6px;">
+            <i class="arrow up icon"></i>
+            <input type="file" style="display:none;"/>
+            Do computador...
+        </div>        
+        <div class="ui labeled icon basic button"
+                id="imgDeleteButton"
+                style="float:right;position:relative;bottom:6px;">
+            <i class="trash icon"></i>
+            Apagar...
+        </div>        
     </div>
     <div class="content">
-    </div>
-    <div class="actions">
     </div>
 </div>

@@ -49,3 +49,13 @@ span.cm-formatting.cm-formatting-code-block, .cm-comment {
         font-size: 1.5rem;
     }
 }
+
+.media-item img {
+    border: solid 1px #a5a5a5;
+    border-radius: 2px;
+}
+
+.media-item .filename-label {
+    max-width: 200px;
+    word-wrap: break-word;
+}

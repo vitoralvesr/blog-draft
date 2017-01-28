@@ -21,6 +21,7 @@
     "express-session": "^1.14.2",
     "glob": "^7.1.1",
     "highlight.js": "git+https://github.com/isagalaev/highlight.js.git",
+    "lodash": "^4.17.4",
     "marked": "^0.3.6",
     "mkdirp": "^0.5.1",
     "moment": "^2.17.1",
@@ -29,7 +30,8 @@
     "ono": "^2.2.1",
     "password-generator": "^2.1.0",
     "request": "^2.79.0",
-    "serve-favicon": "^2.3.2"
+    "serve-favicon": "^2.3.2",
+    "sharp": "^0.17.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^1.0.0",
@@ -38,10 +40,12 @@
     "@types/express-handlebars": "0.0.29",
     "@types/express-session": "0.0.32",
     "@types/glob": "^5.0.30",
+    "@types/lodash": "^4.14.51",
     "@types/mkdirp": "^0.3.29",
     "@types/node": "^7.0.4",
     "@types/request": "0.0.39",
     "@types/serve-favicon": "^2.2.28",
+    "@types/sharp": "^0.17.0",
     "typescript": "^2.1.5"
   }
 }
