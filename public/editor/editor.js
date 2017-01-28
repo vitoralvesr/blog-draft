@@ -110,7 +110,7 @@
                         }
                         var html = $('<div class="ui four column grid stackable"></div>')
                         resp.files.forEach(function (file) {
-                            var style = 'background-image: url(/media/thumbnails/'+ file +');'
+                            var style = 'background-image: url(/media/thumbnails/'+ encodeURIComponent(file) +');'
                                 + 'background-repeat: no-repeat;'
                                 + 'background-size: contain;'
                                 + 'background-position: top;'

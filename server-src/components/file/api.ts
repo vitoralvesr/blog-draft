@@ -83,7 +83,7 @@ var uploadfn : express.RequestHandler = async (req, res, next) => {
         if (pathTest.dir !== MEDIA_FOLDER) throw ono('Nome de arquivo inválido.')
         var img = sharp(req.body)
         let saveThumb = thumbnailGenerate(filename, img)
-        let saveMain = $promisify(fs.writeFile, path.resolve(MEDIA_FOLDER, filename), req.body)
+        let saveMain = $promisify(fs.writeFile, toSave, req.body)
         await Promise.all([saveThumb, saveMain])
         files.push(filename)
         res.status(200).send({ status : updating ? 'Updated existing file.' : 'Created new file.' })
