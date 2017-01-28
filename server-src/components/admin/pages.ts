@@ -21,6 +21,7 @@ admin.get('/articles', async (req, res, next) => {
             LIMIT 10`)
         articles = articles.map( article => {
             article.formattedDate = moment(article.created).format(config.config.timestamp_format)
+            article.formattedContent = article.trimmed_content//(article.trimmed_content || '').replace(/\n/g, '<br/>')
             return article
         })
         res.render('v-articles', {

@@ -75,7 +75,14 @@
                 $fixedMenu.transition('fade out')
             }
         })
-        $('.article-content table').addClass('ui collapsing table')
+        var $content = $('.article-content')
+        $content.find('table').addClass('ui collapsing table')
+        $content.find('img')
+            .css('display' , 'block')
+            .css('max-width', '100%')
+            .css('max-height', '30em')
+            .css('margin-left', 'auto')
+            .css('margin-right', 'auto')
     })
 </script>
 
@@ -101,7 +108,7 @@
                 <h1 class="ui header">{{title}}</h1>
                 <div class="post-meta">{{userDisplayName}} em {{formattedDate}}</div>
             </div>
-            <div class="article-content">
+            <div class="article-content" data-post-id="{{id}}">
                 <div class="buttons">
                     {{#if @root.$online}}
                     <a href="/pages/article/{{id}}/edit">

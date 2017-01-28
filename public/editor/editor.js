@@ -1,7 +1,7 @@
 /* eslint-env browser */
 /* global $ Site */
 
-(function() { 
+(function() {
 
     var exports = {}
 
@@ -37,24 +37,30 @@
         var addPictureEl =  $toolbar.find('.fa.fa-picture-o')[0]
         //let previousAddPictureEv = addPictureEl.onclick
         addPictureEl.onclick = function (event) {
-            $.get('/assets/editor/media-modal.html').then(function (resp) {
+            $.get('/assets/editor/editor-modal.html').then(function (resp) {
                 var $modal = $(resp)
 
                 var $button = $modal.find('#uploadButton')
                 var $input = $button.find('input[type=file]')
-                $button.on('click', function () { 
+                var $delete = $modal.find('#imgDeleteButton')
+                var $content = $modal.find('#content')
+
+                $button.on('click', function () {
                     $input[0].click()
                 })
-                $input.on('change', function () { 
+
+                $input.on('change', function () {
                     var files = this.files
                     if (!(files && files.length)) return
                     var reader = new FileReader()
                     reader.onload = function (readerEv) {
+                        $content.dimmer('show')
                         Site.ajaxSendRaw(
                             'PUT',
                             '/api/file/' + encodeURIComponent(files[0].name),
                             readerEv.target.result
                         ).then(function () {
+                            $content.dimmer('hide')
                             //TODO show message
                             return _populateList()
                         })
@@ -63,20 +69,39 @@
                     reader.readAsArrayBuffer(files[0])
                 })
 
+                var _iconsActive = false
+                $delete.on('click', function (event) {
+                    if (_iconsActive) return
+                    _iconsActive = true
+                    $modal.find('#content .inner .media-item').append(
+                        '<div class="ui top right attached red label remove" style="width:35px"><i class="icon remove"></i></div>'
+                    ).on('click', function(event) {
+                        $content.dimmer('show')
+                        Site.ajaxRequest({
+                            method: 'DELETE',
+                            url: '/api/file/' + $(this).attr('data-file')
+                        }).then(function () { 
+                            _populateList()
+                            $content.dimmer('hide')
+                        })
+                        .catch(_handleError)
+                    })
+                })
+
 
                 $modal.modal('show')
                 _populateList().catch(_handleError)
 
-                
+
                 function _populateList() {
                     return Site.ajaxRequest({
                         method: 'GET',
                         url : '/api/file'
                     })
-                    .then(function (resp) { 
+                    .then(function (resp) {
                         if (!resp.files) throw Error('Erro ao mostrar arquivos.')
                         if (!resp.files.length) {
-                            $modal.find('.content').empty().append(
+                            $modal.find('#content .inner').empty().append(
                                 '<h1 style="margin:20px;color:#c5c5c5;text-align:center;">' +
                                 'Nenhum conteúdo.' +
                                 '</h1 >'
@@ -85,12 +110,22 @@
                         }
                         var html = $('<div class="ui four column grid stackable"></div>')
                         resp.files.forEach(function (file) {
-                            var $el = $('<div class="column media-item">' +
-                                '<img src="/media/thumbnails/' + file + '" class="img-upload">' +
-                                '<div class="ui bottom left attached label filename-label">' + file + '</div>' +
-                                '</img>' +
+                            var style = 'background-image: url(/media/thumbnails/'+ file +');'
+                                + 'background-repeat: no-repeat;'
+                                + 'background-size: contain;'
+                                + 'background-position: top;'
+                                + 'height:130px;'
+                                + 'margin:15px;'
+                                + 'cursor:pointer;'
+
+                            var $el = $('<div class="column media-item" style="'+ style +'">' +
+                                '<div class="ui bottom left attached label filename-label" style="bottom:-15px">' + file + '</div>' +
                                 '</div>')
-                            $el.on('click', function (event) { 
+                            $el.attr('data-file', file)
+                            $el.on('click', function (event) {
+                                if ($(event.target).hasClass('remove')) {
+                                    return false
+                                }
                                 //var fn = previousAddPictureEv.bind(this)
                                 //fn(event)
                                 var absPath = '/media/' + file
@@ -99,19 +134,23 @@
                                 $modal.modal('hide')
                             })
                             html.append($el)
+                            _iconsActive = false
                         })
-                        $modal.find('.content').empty().append(html)
+                        $modal.find('#content .inner').empty().append(html)
                     })
                 }
 
 
                 function _handleError(err) {
-                    //TODO implement me
+                    $content.dimmer('hide')                    
+                    var $error = $modal.find('.ui.error')
+                    $error.removeClass('hidden')
+                    $error.find('.content').html(err.error.message)
                     throw err
                 }
 
             })
-        }        
+        }
 
         if (window.innerWidth < 700) {
                 //custom toolbar options were giving me trouble. Monkey-patch it.
@@ -133,9 +172,9 @@
                     .before($newEl)
                     .before('<i class="separator">|</i>')
                 editor.toolbarElements.fullscreen = $newEl[0]
-            }        
+            }
     }
-    
+
 
     window.Editor = exports
 

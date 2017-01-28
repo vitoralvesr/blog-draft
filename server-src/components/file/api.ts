@@ -38,10 +38,10 @@ init()
 const files = express.Router()
 export = files
 
-var __fileList
+var __fileList : string[]
 async function fileList() {
     if (__fileList) return __fileList
-    var [resp] = await $promisify(glob, `${MEDIA_FOLDER}/*.{jpg,jpeg,png,gif}`)
+    var [resp] = await $promisify(glob, `${MEDIA_FOLDER}/*.{jpg,JPG,jpeg,JPEG,png,PNG,gif,GIF}`)
     __fileList = resp.map(file => {
         return path.relative(MEDIA_FOLDER, file)
     })
@@ -108,9 +108,13 @@ files.delete('/:filename', async (req, res, next) => {
         var { filename } = req.params
         fileCheck(filename)
         var files = await fileList()
-        if (files.indexOf(filename) !== -1)
-            throw ono('Este arquivo não existe.')        
-        await $promisify(fs.unlink, path.resolve( MEDIA_FOLDER, filename ) )
+        let idx = files.indexOf(filename)
+        if (idx === -1) throw ono('Este arquivo não existe.')        
+        await Promise.all([
+            $promisify(fs.unlink, path.resolve(MEDIA_FOLDER, filename)) ,
+            $promisify(fs.unlink, path.resolve(THUMBNAIL_FOLDER, filename))            
+        ])
+        __fileList.splice(idx, 1)
         res.status(200).send({ status : 'OK' })
     } catch (err) {
         next(err)
