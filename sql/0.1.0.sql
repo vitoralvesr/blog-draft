@@ -1,0 +1,2 @@
+ALTER TABLE `articles`
+	ADD COLUMN `draft` TINYINT(1) NULL DEFAULT NULL AFTER `source`;
