@@ -23,7 +23,7 @@ pages.get('/list', async (req, res, next) => {
         var all = rows.map(async row => {
             var content = await $promisify(
                 marked,
-                row.content,
+                row.content||'',
                 { sanitize: config.sanitize_markdown == true }
             )
             row.content = content
