@@ -64,7 +64,7 @@ function fileCheck(filename) {
     if (['jpg', 'jpeg', 'png', 'gif'].indexOf(parsed.ext.toLowerCase().substr(1)) === -1)
         throw ono('Extensão não suportada.')    
     if (filename.indexOf('/') !== -1 || filename.startsWith('..') || filename.indexOf('\\') !== -1)        
-        throw ono('Subpastas não são suportadas no momento.')
+        throw ono('Nome de arquivo inválido.')
 }
 
 
@@ -78,6 +78,9 @@ var uploadfn : express.RequestHandler = async (req, res, next) => {
             if (req.query.update || req.method.toUpperCase() === 'PUT') updating = true
             else throw ono('Um arquivo com o mesmo nome já existe.')
         }
+        let toSave = path.resolve(MEDIA_FOLDER, filename)
+        let pathTest = path.parse(toSave)
+        if (pathTest.dir !== MEDIA_FOLDER) throw ono('Nome de arquivo inválido.')
         var img = sharp(req.body)
         let saveThumb = thumbnailGenerate(filename, img)
         let saveMain = $promisify(fs.writeFile, path.resolve(MEDIA_FOLDER, filename), req.body)
