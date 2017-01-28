@@ -79,7 +79,7 @@
                         $content.dimmer('show')
                         Site.ajaxRequest({
                             method: 'DELETE',
-                            url: '/api/file/' + $(this).attr('data-file')
+                            url: '/api/file/' + encodeURIComponent($(this).attr('data-file'))
                         }).then(function () { 
                             _populateList()
                             $content.dimmer('hide')
