@@ -171,22 +171,6 @@
         })
     }
 
-    
-    exports.defaultMDEConfig = function(element) {
-        return {
-            element: element,
-            spellChecker: false,
-            renderingConfig: { codeSyntaxHighlighting: true },
-            toolbar: undefined
-        }
-    }
-
-
-    exports.fitHeight = function (element, offset) {
-        offset = offset || 20
-        var currentY = $(element).offset().top - window.pageYOffset
-        element.style.height = (window.innerHeight - currentY - offset) + 'px'
-    }
 
     window.Site = exports
 

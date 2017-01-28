@@ -2,13 +2,16 @@ import express = require('express')
 import mkdirp = require('mkdirp')
 import glob = require('glob')
 import path = require('path')
+import sharp from 'sharp'
 
 import bodyParser = require('body-parser')
 import ono = require('ono')
 import fs = require('fs')
 
-const MEDIA_FOLDER = path.resolve( process.cwd() , '../user-content/media' )
-mkdirp.sync('../user-content/media')
+const MEDIA_FOLDER = path.resolve(process.cwd(), '../user-content/media')
+const THUMBNAIL_FOLDER = path.resolve( MEDIA_FOLDER , 'thumbnails' )
+mkdirp.sync(MEDIA_FOLDER)
+mkdirp.sync(THUMBNAIL_FOLDER)
 
 
 const files = express.Router()
@@ -54,7 +57,10 @@ var uploadfn : express.RequestHandler = async (req, res, next) {
             if (req.query.update || req.method.toUpperCase() === 'PUT') updating = true
             else throw ono('Um arquivo com o mesmo nome já existe.')
         }
-        await $promisify( fs.writeFile, path.resolve( MEDIA_FOLDER , filename ), req.body )
+        var img = sharp(req.body)
+        let saveThumb = thumbnail(img, filename)
+        let saveMain = $promisify(fs.writeFile, path.resolve(MEDIA_FOLDER, filename), req.body)
+        await Promise.all([saveThumb, saveMain])
         files.push(filename)
         res.status(200).send({ status : updating ? 'Updated existing file.' : 'Created new file.' })
     } catch (err) {
@@ -63,7 +69,17 @@ var uploadfn : express.RequestHandler = async (req, res, next) {
 }
 files.route('/:filename')
     .post(bodyParser.raw(), uploadfn)
-    .put(bodyParser.raw(),  uploadfn)
+    .put(bodyParser.raw(), uploadfn)
+    
+    
+async function thumbnail(img, filename) {
+    var imgmeta = await img.metadata()
+    var limit = 150
+    let max = Math.max(imgmeta.width, imgmeta.height)
+    var [neww, newh] = [imgmeta.width / max * limit, imgmeta.height / max * limit]
+    let thumbnail = await img.resize(neww, newh).webp().toBuffer()
+    await $promisify( fs.writeFile, path.resolve( THUMBNAIL_FOLDER, filename) , thumbnail )
+}
 
 
 files.delete('/:filename', async (req, res, next) => { 

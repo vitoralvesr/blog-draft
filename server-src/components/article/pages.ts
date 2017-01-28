@@ -44,7 +44,10 @@ pages.get('/list', async (req, res, next) => {
 
 
 pages.get('/new', auth.authGate, async (req, res, next) => {
-    res.render('v-new', { title : 'Novo post' })
+    res.render('v-new', {
+        title: 'Novo post',
+        $scripts: [ '/assets/editor/editor.js' ]        
+    })
 })
 
 
@@ -58,7 +61,8 @@ pages.get('/:pageId/edit', auth.authGate, async (req, res, next) => {
         let article = rows[0]
         res.render('v-edit', { 
             title: 'Editando artigo :: ' + article.title ,
-            article
+            article,
+            $scripts: [ '/assets/editor/editor.js' ]
         })
     } catch (err) {
         next(err)
