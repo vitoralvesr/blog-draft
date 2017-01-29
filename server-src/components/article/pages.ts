@@ -38,7 +38,7 @@ pages.get('/list', async (req, res, next) => {
         var rows2 = await Promise.all(all)
         res.render('v-list', {
             title : config.main_title ,
-            itens: rows2,
+            items: rows2,
             $atRoot : true
         })
     } catch (err) {

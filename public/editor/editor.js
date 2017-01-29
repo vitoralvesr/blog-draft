@@ -224,7 +224,8 @@
                 edited : new Date() ,
                 content : editor.value()
             }
-            localStorage.setItem('article:' + id , JSON.stringify(tosave))
+            localStorage.setItem('article:' + id, JSON.stringify(tosave))
+            $('#revertBtn').show()            
             console.log('saved local draft')
         }, 1000 * 30)
 
