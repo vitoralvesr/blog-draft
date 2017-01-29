@@ -1,20 +1,24 @@
 import express = require('express')
 const api = express.Router()
-import { connection as db, insert } from '@common/database'
+import { connection as db, insert, simpleUpdate } from '@common/database'
 //import { ArticleProvider } from './providers'
 
 api.put('/:id?',  async (req, res, next) => {
     try {
         $checkParams(req.body, 'id')
-        req.body.status = req.body.status || 'published'        
-        //var provider = await ArticleProvider.init(req.body.id)
-        //await provider.update(req.body)
-        let trimmed = (req.body.content||'').substr(0,380)
-        await db.execute(
-            `UPDATE articles SET title = ?, content = ?, trimmed_content = ?, status = ?
-            WHERE id = ?`,
-            [req.body.title || '', req.body.content || '', trimmed, req.body.status, req.body.id || '' ]
-        )
+        req.body.status = req.body.status || 'published'
+        req.body.content = req.body.content || ''
+        req.body.trimmed_content = (req.body.content || '').substr(0, 380)
+        var fields = ['title', 'content', 'trimmed_content', 'status']
+        if (req.body.created) {
+            fields.push('created')
+        }
+        await simpleUpdate({
+            fields,
+            data: req.body,
+            into: 'articles',
+            id : req.body.id
+        })
         res.status(200).send({ status: 'ok' })
     } catch (err) {
         next(err) 
@@ -66,12 +70,6 @@ api.delete('/:id', async (req, res, next) => {
     } catch (err) {
         next(err)
     }
-})
-
-
-api.get('/ping', (req, res, next) => {
-    var d = new Date()
-    return res.status(200).send({ tzoffset : d.getTimezoneOffset() })    
 })
 
 

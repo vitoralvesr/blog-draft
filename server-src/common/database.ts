@@ -43,3 +43,23 @@ export async function insert(p: insertOpts) {
     
     return connection.execute(query, values)
 }
+
+type updateOpts = {
+    fields: string[]
+    data: any
+    into: string,
+    id: number
+}
+export async function simpleUpdate(p: updateOpts) {
+    let setPairs = p.fields.map(field => { 
+        return `${field} = ?`
+    })
+    let values = p.fields.map(field => {
+        let data = p.data[field]
+        if (data === undefined) throw Error(`Update: field ${field} has no data.`)
+        return data
+    })
+    values.push(Number(p.id)||'')
+    let query = `UPDATE ${p.into} SET ${setPairs.join(' , ')} WHERE id = ?`
+    return connection.execute(query, values)
+}

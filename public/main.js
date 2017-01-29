@@ -59,6 +59,7 @@
             if (opts.editData) objectToSend = opts.editData(objectToSend)
 
             let submitBtn = event.target
+            if (submitBtn.tagName === 'FORM') submitBtn = submitBtn.querySelector('input[type=submit]')
             $(submitBtn).removeClass('primary teal')
             let prevValue = submitBtn.value
             submitBtn.value = 'Enviando'
@@ -84,7 +85,7 @@
                     window.location.pathname = formEl.dataset.redirectTo
                     return
                 }*/
-                window.history.go(-1)
+                goBack()
             })
             .catch( function(err) {
                 _submitting = false
@@ -105,6 +106,15 @@
         }
     }
 
+
+    function goBack() {
+        if ('referrer' in document) {
+            window.location = document.referrer;
+        } else {
+            window.location.go(-1);
+        }    
+    }
+    exports.goBack = goBack
 
     function populateForm(formEl, valuesObj) {
         for (var it in valuesObj) {
@@ -204,6 +214,27 @@
         exports.ajaxRequest({method:'GET', url:'/api/user/logout'}).then(() => {
             window.location.reload()
         })
+    }
+
+
+    exports.confirmModal = function (opts, callback) {
+        var $modal = $(
+            '<div class="ui small modal">'
+            + '  <div class="header">' + opts.title + '</div>'
+            + '  <div class="content">'
+            + '    <p>' + opts.text + '</p>'
+            + '  </div>'
+            + '  <div class="actions">'
+            + '    <div class="ui approve primary button">OK</div>'
+            + '    <div class="ui cancel button">Cancelar</div>'
+            + '  </div>'
+            + '</div>')
+
+        $modal.find('.approve.button').on('click', function () {
+            callback()
+        })
+
+        $modal.modal('show')        
     }
 
 

@@ -21,7 +21,7 @@
     </div>
 
     <form
-        class="ui form" 
+        class="ui form"
         name="articleForm"
         data-url="/api/article/{{article.id}}"
         data-method="PUT"
@@ -39,7 +39,12 @@
 
         <div class="field">
             <label>Título</label>
-            <input type="text" name="title" value="{{article.title}}">
+            <div class="ui right labeled input">
+                <input type="text" name="title" value="{{article.title}}">
+                <div class="ui label icon button post-options">
+                    <i class="icon ellipsis horizontal"></i>
+                </div>
+            </div>
         </div>
 
         <div class="field">
@@ -61,7 +66,7 @@
         </div>
 
         <!-- <input type="submit" class="ui button primary" value="Salvar"/> -->
-        <a href="#" class="ui button" onclick="window.history.go(-1)">Cancelar</a>
+        <a href="#" class="ui button" onclick="Site.goBack()">Cancelar</a>
         <div
             onclick="deletePost()"
             class="ui labeled icon button basic red right floated">
@@ -73,7 +78,7 @@
             class="ui labeled icon button basic right floated">
             <i class="icon backward"></i>
             Reverter
-        </div>        
+        </div>
 
     </form>
 
@@ -81,36 +86,50 @@
 
 <script>
 $(function() {
+    var _setDate
+
     var editor = new SimpleMDE(
         Editor.defaultMDEConfig(document.getElementById('mdContent'))
     )
-    Editor.editorHack(editor)    
+    Editor.editorHack(editor)
     var isDraft = '{{article.status}}' == 'draft'
     Editor.initSubmitter($('.submitter'), isDraft, articleForm)
     Editor.localDraft(
         editor, '{{article.edited}}', '{{article.id}}',
-        '{{noLocalDraft}}')    
+        '{{noLocalDraft}}')
+    $('.post-options').on('click', function(){
+        Editor.showPostOptions(_setDate || '{{article.created}}', function(result) {
+            if (result) _setDate = result
+        })
+    })
 
 
     window.deletePost = function() {
         var id = articleForm.id.value
-        $.ajax({
-            method : 'DELETE' ,
-            url : '/api/article/' + id
-        }).then(() => {
-            window.location.pathname = '/'
-        })
-        .catch( function(err) {
-            $('.ui.message.error')
-                .html('<p>' + (err.message || err.responseText) + '</p>')
-                .show()
-            $('body').animate({scrollTop:0},1000)
+
+        Site.confirmModal({
+            title : 'Excluir este post' ,
+            text: 'Confirma?'
+        }, function() {
+            $.ajax({
+                method : 'DELETE' ,
+                url : '/api/article/' + id
+            }).then(() => {
+                window.location.pathname = '/'
+            })
+            .catch( function(err) {
+                $('.ui.message.error')
+                    .html('<p>' + (err.message || err.responseText) + '</p>')
+                    .show()
+                $('body').animate({scrollTop:0},1000)
+            })
         })
     }
 
     Site.jsonForm(articleForm, {
         editData : function(data) {
             data.content = editor.value()
+            if (_setDate) data.created = _setDate
             return data
         }
     })

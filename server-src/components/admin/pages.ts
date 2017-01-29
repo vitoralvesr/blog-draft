@@ -40,6 +40,7 @@ admin.get('/articles', async (req, res, next) => {
 admin.get('/config', (req, res) => {
     var _config = <any>Object.assign({}, config.config)
     _config.allow_html = _config.sanitize_markdown == true ? false : true
+    _config.display_name = req.session.userName
     res.render('v-config', {
         layout: 'flat-layout' ,
         config : JSON.stringify(_config)

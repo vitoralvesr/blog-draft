@@ -206,100 +206,133 @@
                 .addClass('primary')
             $submit.html('Publicar')
         }
-
-
-        exports.localDraft = localDraft        
-        function localDraft(editor, edited, id, noLocalDraft) {
-            var _offset
-            id = id || 'NEW'
-
-            if (id === 'NEW') (Site.submitHooks||[]).push(function(){
-                localStorage.removeItem('article:NEW')
-            })
-            
-            $('#revertBtn').hide()
-            
-            setInterval( function() {
-                var tosave = {
-                    edited : new Date() ,
-                    content : editor.value()
-                }
-                localStorage.setItem('article:' + id , JSON.stringify(tosave))
-                console.log('saved local draft')
-            }, 1000 * 30)
-
-            if (noLocalDraft) return
-
-
-            let showNag = localStorage.getItem('once:localDraft')
-            if (!showNag) {
-                nagModal()
-            }
-
-            function nagModal() {
-                var $modal = $(
-                    '<div class="ui small modal">'
-                    + '  <div class="header">Sobre o rascunho local</div>'
-                    + '  <div class="content">'
-                    + '    <p>O sistema automaticamente salva um rascunho do artigo'
-                    + '       de tempos em tempos, mesmo que você não tenha clicado em "Salvar" ou "Publicar".</p>'
-                    + '    <p>Caso queira ver a última versão que você mandou salvar (ao invés do último rascunho salvo), use o botão "Reverter".</p>'
-                    + '  </div>'
-                    + '  <div class="actions">'
-                    + '    <div class="ui approve primary button">OK</div>'
-                    + '  </div>'
-                    + '</div>')
-                localStorage.setItem('once:localDraft', '1')
-                $modal.modal('show')
-            }
-
-
-            $('#revertBtn').on('click', function(event) {
-                var $modal = $(
-                    '<div class="ui small modal">'
-                    + '  <div class="header">Reverter</div>'
-                    + '  <div class="content">'
-                    + '    <p>Isto irá reverter seu texto para o último estado salvo no servidor.</p>'
-                    + '  </div>'
-                    + '  <div class="actions">'
-                    + '    <div class="ui approve primary button">OK</div>'
-                    + '    <div class="ui cancel button">Cancelar</div>'
-                    + '  </div>'
-                    + '</div>')
-
-                $modal.find('.approve.button').on('click', function () {
-                    let current = window.location.href.split('?')[0]
-                    window.location.href = current + '?fresh=1'
-                })
-
-                $modal.modal('show')
-            })
-
-
-            Site.ajaxRequest({ method: 'GET', url : '/api/article/ping' }).then( function(resp) {
-                var d = new Date()
-                _offset = d.getTimezoneOffset() - resp.tzoffset
-                var stored
-                try {
-                    var raw = localStorage.getItem('article:' + id)
-                    stored = JSON.parse(raw)
-                } catch(err) {
-                    return
-                }
-                if (!stored) return
-                var savedTime = new Date(edited)
-                var localstoredTime = new Date(stored.edited)
-                localstoredTime.setMinutes(localstoredTime.getMinutes() + _offset)
-                if (localstoredTime.getTime() > (savedTime.getTime() || 0)) {
-                    editor.value(stored.content)
-                    if (id !== 'NEW') $('#revertBtn').show()
-                }
-            })
-        }        
-
     }
 
 
+    exports.localDraft = localDraft        
+    function localDraft(editor, edited, id, noLocalDraft) {
+        id = id || 'NEW'
+
+        if (id === 'NEW') (Site.submitHooks||[]).push(function(){
+            localStorage.removeItem('article:NEW')
+        })
+        
+        $('#revertBtn').hide()
+        
+        setInterval( function() {
+            var tosave = {
+                edited : new Date() ,
+                content : editor.value()
+            }
+            localStorage.setItem('article:' + id , JSON.stringify(tosave))
+            console.log('saved local draft')
+        }, 1000 * 30)
+
+        if (noLocalDraft) return
+
+        loadDraft()        
+
+        let showNag = localStorage.getItem('once:localDraft')
+        if (!showNag) {
+            nagModal()
+        }
+
+        function nagModal() {
+            var $modal = $(
+                '<div class="ui small modal">'
+                + '  <div class="header">Sobre o rascunho local</div>'
+                + '  <div class="content">'
+                + '    <p>O sistema automaticamente salva um rascunho do artigo'
+                + '       de tempos em tempos, mesmo que você não tenha clicado em "Salvar" ou "Publicar".</p>'
+                + '    <p>Caso queira ver a última versão que você mandou salvar (ao invés do último rascunho salvo), use o botão "Reverter".</p>'
+                + '  </div>'
+                + '  <div class="actions">'
+                + '    <div class="ui approve primary button">OK</div>'
+                + '  </div>'
+                + '</div>')
+            localStorage.setItem('once:localDraft', '1')
+            $modal.modal('show')
+        }
+
+
+        $('#revertBtn').on('click', function(event) {
+            var $modal = $(
+                '<div class="ui small modal">'
+                + '  <div class="header">Reverter</div>'
+                + '  <div class="content">'
+                + '    <p>Isto irá reverter seu texto para o último estado salvo no servidor.</p>'
+                + '  </div>'
+                + '  <div class="actions">'
+                + '    <div class="ui approve primary button">OK</div>'
+                + '    <div class="ui cancel button">Cancelar</div>'
+                + '  </div>'
+                + '</div>')
+
+            $modal.find('.approve.button').on('click', function () {
+                let current = window.location.href.split('?')[0]
+                window.location.href = current + '?fresh=1'
+            })
+
+            $modal.modal('show')
+        })
+
+
+        function loadDraft() {
+            var stored
+            try {
+                var raw = localStorage.getItem('article:' + id)
+                stored = JSON.parse(raw)
+            } catch(err) {
+                return
+            }
+            if (!stored) return
+            var savedTime = new Date(edited)
+            var localstoredTime = new Date(stored.edited)
+            //localstoredTime.setMinutes(localstoredTime.getMinutes() + _offset)
+            if (localstoredTime.getTime() > (savedTime.getTime() || 0)) {
+                editor.value(stored.content)
+                if (id !== 'NEW') $('#revertBtn').show()
+            }
+        }
+    }
+
+
+    exports.showPostOptions = function (created, callback) {
+        var date = new Date(created)
+        var formatted =
+            date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
+            + ' ' + date.getHours() + ':' + date.getMinutes()
+
+        var $modal = $(
+            '<div class="ui small modal">'
+            + '  <div class="header">Opções</div>'
+            + '  <div class="content">'
+            + '    <div class="ui form">'
+            + '      <div class="field">'
+            + '        <label>Alterar data de criação (dd/mm/yyyy hh:mm)</label>'
+            + '        <input type="text"></input>'
+            + '      </div>'
+            + '    </div>'
+            + '  </div>'
+            + '  <div class="actions">'
+            + '    <div class="ui approve primary button">OK</div>'
+            + '    <div class="ui cancel button">Cancelar</div>'
+            + '  </div>'
+            + '</div>')    
+        var $text = $modal.find('input[type=text]')
+        $text.val(formatted)
+        $modal.find('.ui.approve').on('click', function () { 
+            let datesplit = $text.val().split(/[\s:\/]/g)
+            var date = new Date()
+            date.setDate(Number(datesplit[0]))
+            date.setMonth(Number(datesplit[1]) - 1)
+            date.setFullYear(Number(datesplit[2]))
+            date.setHours(Number(datesplit[3]))
+            date.setMinutes(Number(datesplit[4]))
+            callback(date)
+        })
+        $modal.modal('show')
+    }
 
 
     window.Editor = exports
