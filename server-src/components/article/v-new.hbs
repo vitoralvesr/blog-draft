@@ -36,7 +36,12 @@
 
         <div class="field">
             <label>Título</label>
-            <input type="text" name="title" value={{article.title}}>
+            <div class="ui right labeled input">
+                <input type="text" name="title" value="{{article.title}}">
+                <div class="ui label icon button post-options">
+                    <i class="icon ellipsis horizontal"></i>
+                </div>
+            </div>
         </div>
         
         <div class="field" style="display:none;">
@@ -92,6 +97,10 @@
 
 <script>
 $(function(){
+    var __toset = {
+        markdown_break : '1'
+    }
+
     $('select').dropdown()
     var editor = new SimpleMDE(
         Editor.defaultMDEConfig(articleForm.content)
@@ -99,7 +108,13 @@ $(function(){
     window.editor = editor
     Editor.editorHack(editor)
     Editor.initSubmitter($('.submitter'), true, articleForm)
-    Editor.localDraft(editor)        
+    Editor.localDraft(editor) 
+    $('.post-options').on('click', function(){
+        Editor.showPostOptions( __toset , function(result) {
+            if (!result) return
+            __toset = result
+        })
+    })           
   
 
     //git source extra field
@@ -152,6 +167,7 @@ $(function(){
     Site.jsonForm(articleForm, {
         editData : function(data) {
             data.content = editor.value()
+            data = jQuery.extend(data, __toset)
             return data
         }
     })    

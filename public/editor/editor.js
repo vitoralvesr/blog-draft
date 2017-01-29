@@ -80,7 +80,7 @@
                         Site.ajaxRequest({
                             method: 'DELETE',
                             url: '/api/file/' + encodeURIComponent($(this).attr('data-file'))
-                        }).then(function () { 
+                        }).then(function () {
                             _populateList()
                             $content.dimmer('hide')
                         })
@@ -142,7 +142,7 @@
 
 
                 function _handleError(err) {
-                    $content.dimmer('hide')                    
+                    $content.dimmer('hide')
                     var $error = $modal.find('.ui.error')
                     $error.removeClass('hidden')
                     $error.find('.content').html(err.error.message)
@@ -180,7 +180,7 @@
         var $submit = $element.find('.active-submit')
         var $dropdown = $element.find('.ui.floating.dropdown')
         var selected
-        
+
         if (isDraft) toDraft()
         else toPublish()
 
@@ -193,32 +193,32 @@
             selected = 'draft'
             form.elements.status.value = selected
             $submit.add($dropdown)
-                .removeClass('primary')    
+                .removeClass('primary')
                 .addClass('teal')
             $submit.html('Salvar rascunho')
         }
 
         function toPublish() {
             selected = 'published'
-            form.elements.status.value = selected            
+            form.elements.status.value = selected
             $submit.add($dropdown)
-                .removeClass('teal')    
+                .removeClass('teal')
                 .addClass('primary')
             $submit.html('Publicar')
         }
     }
 
 
-    exports.localDraft = localDraft        
+    exports.localDraft = localDraft
     function localDraft(editor, edited, id, noLocalDraft) {
         id = id || 'NEW'
 
         if (id === 'NEW') (Site.submitHooks||[]).push(function(){
             localStorage.removeItem('article:NEW')
         })
-        
+
         $('#revertBtn').hide()
-        
+
         setInterval( function() {
             var tosave = {
                 edited : new Date() ,
@@ -230,7 +230,7 @@
 
         if (noLocalDraft) return
 
-        loadDraft()        
+        loadDraft()
 
         let showNag = localStorage.getItem('once:localDraft')
         if (!showNag) {
@@ -297,39 +297,75 @@
     }
 
 
-    exports.showPostOptions = function (created, callback) {
-        var date = new Date(created)
-        var formatted =
-            date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
-            + ' ' + date.getHours() + ':' + date.getMinutes()
-
+    exports.showPostOptions = function (opts, mainCb) {
         var $modal = $(
             '<div class="ui small modal">'
             + '  <div class="header">Opções</div>'
             + '  <div class="content">'
             + '    <div class="ui form">'
-            + '      <div class="field">'
-            + '        <label>Alterar data de criação (dd/mm/yyyy hh:mm)</label>'
-            + '        <input type="text"></input>'
-            + '      </div>'
             + '    </div>'
             + '  </div>'
             + '  <div class="actions">'
             + '    <div class="ui approve primary button">OK</div>'
             + '    <div class="ui cancel button">Cancelar</div>'
             + '  </div>'
-            + '</div>')    
-        var $text = $modal.find('input[type=text]')
-        $text.val(formatted)
-        $modal.find('.ui.approve').on('click', function () { 
-            let datesplit = $text.val().split(/[\s:\/]/g)
-            var date = new Date()
-            date.setDate(Number(datesplit[0]))
-            date.setMonth(Number(datesplit[1]) - 1)
-            date.setFullYear(Number(datesplit[2]))
-            date.setHours(Number(datesplit[3]))
-            date.setMinutes(Number(datesplit[4]))
-            callback(date)
+            + '</div>')
+
+        var callbacks = []
+
+        if (opts.created) createdFn(opts.created)
+        //isolate scope
+        function createdFn(created) {
+            var date = new Date(created)
+            var formatted =
+                date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
+                + ' ' + date.getHours() + ':' + date.getMinutes()
+            var $append = $(
+                '<div class="field">'
+                + '  <label>Alterar data de criação (dd/mm/yyyy hh:mm)</label>'
+                + '  <input type="text"></input>'
+                + '</div>');
+            var $text = $append.find('input[type=text]')
+            $text.val(formatted)
+            $modal.find('.ui.form').append($append)
+
+            callbacks.push(function (outp) {
+                let datesplit = $text.val().split(/[\s:\/]/g)
+                var date = new Date()
+                date.setDate(Number(datesplit[0]))
+                date.setMonth(Number(datesplit[1]) - 1)
+                date.setFullYear(Number(datesplit[2]))
+                date.setHours(Number(datesplit[3]))
+                date.setMinutes(Number(datesplit[4]))
+                outp.created = date
+            })
+        }
+
+        mdBreakFn(opts.markdown_break)
+        function mdBreakFn(markdown_break) {
+            var $append = $(
+                '<div class="field">'
+                + '  <label>Markdown: quebrar linha com apenas 1 enter</label>'
+                + '  <div class="ui checkbox">'
+                + '    <input type="checkbox" name="allow_html"></input>'
+                + '  </div>'
+                + '</div>');
+            var $cb = $append.find('.ui.checkbox')
+            $cb.checkbox()
+            $cb.checkbox(markdown_break == true ? 'set checked' : 'set unchecked')
+            $modal.find('.ui.form').append($append)
+
+            callbacks.push(function (obj) {
+                obj.markdown_break = $cb.checkbox('is checked') ? '1' : ''
+            })
+        }
+
+        $modal.find('.ui.approve').on('click', function () {
+            var obj = {}
+            callbacks.forEach(function (cb) {
+                cb(obj)
+            })
+            mainCb(obj)
         })
         $modal.modal('show')
     }

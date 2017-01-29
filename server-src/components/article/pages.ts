@@ -25,7 +25,10 @@ pages.get('/list', async (req, res, next) => {
             var content = await $promisify(
                 marked,
                 row.content||'',
-                { sanitize: config.sanitize_markdown == true }
+                {
+                    sanitize: config.sanitize_markdown == true,
+                    breaks: row.markdown_break == true
+                }
             )
             row.content = content
             row.formattedDate = moment(row.created).format(config.timestamp_format)

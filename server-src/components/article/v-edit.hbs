@@ -86,7 +86,10 @@
 
 <script>
 $(function() {
-    var _setDate
+    var __toset = {
+        created : '{{article.created}}' ,
+        markdown_break : '{{article.markdown_break}}'
+    }
 
     var editor = new SimpleMDE(
         Editor.defaultMDEConfig(document.getElementById('mdContent'))
@@ -94,12 +97,11 @@ $(function() {
     Editor.editorHack(editor)
     var isDraft = '{{article.status}}' == 'draft'
     Editor.initSubmitter($('.submitter'), isDraft, articleForm)
-    Editor.localDraft(
-        editor, '{{article.edited}}', '{{article.id}}',
-        '{{noLocalDraft}}')
+    Editor.localDraft( editor, '{{article.edited}}', '{{article.id}}', '{{noLocalDraft}}')
     $('.post-options').on('click', function(){
-        Editor.showPostOptions(_setDate || '{{article.created}}', function(result) {
-            if (result) _setDate = result
+        Editor.showPostOptions( __toset , function(result) {
+            if (!result) return
+            __toset = result
         })
     })
 
@@ -115,7 +117,7 @@ $(function() {
                 method : 'DELETE' ,
                 url : '/api/article/' + id
             }).then(() => {
-                window.location.pathname = '/'
+                Site.goBack()
             })
             .catch( function(err) {
                 $('.ui.message.error')
@@ -129,7 +131,7 @@ $(function() {
     Site.jsonForm(articleForm, {
         editData : function(data) {
             data.content = editor.value()
-            if (_setDate) data.created = _setDate
+            jQuery.extend(data, __toset)
             return data
         }
     })

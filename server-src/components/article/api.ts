@@ -10,9 +10,8 @@ api.put('/:id?',  async (req, res, next) => {
         req.body.content = req.body.content || ''
         req.body.trimmed_content = (req.body.content || '').substr(0, 380)
         var fields = ['title', 'content', 'trimmed_content', 'status']
-        if (req.body.created) {
-            fields.push('created')
-        }
+        if (req.body.created) fields.push('created')
+        if (req.body.markdown_break !== undefined) fields.push('markdown_break')
         await simpleUpdate({
             fields,
             data: req.body,
@@ -33,11 +32,13 @@ api.post('/', async (req, res, next) => {
         if (req.body.source === 'git')
             $checkParams(req.body, 'githubUser', 'githubRepo', 'githubPath')
         req.body.user = Number(req.session.userId)
-        req.body.trimmed_content = (req.body.content||'').substr(0,380) + ' ...'        
+        req.body.trimmed_content = (req.body.content || '').substr(0, 380) + ' ...'
+        var fields =  ['source', 'githubUser', 'githubRepo', 'githubPath',
+            'title', 'content', 'user', 'trimmed_content', 'status']
+        if (req.body.markdown_break !== undefined) fields.push('markdown_break')
         await insert({
             into: 'articles',
-            fields: ['source', 'githubUser', 'githubRepo', 'githubPath',
-                'title', 'content', 'user', 'trimmed_content', 'status'],
+            fields ,
             data: req.body,
             camelCase : true
         })
