@@ -16,11 +16,15 @@ var pages = express.Router()
 
 pages.get('/list', async (req, res, next) => {
     try {
-        let [rows] = await db.connection.execute(`SELECT articles.*, users.display_name
+        let skip = Number(req.query.skip)
+        let skipQuery = skip ? '?,' : ''
+        let query = `SELECT articles.*, users.display_name
             FROM articles LEFT JOIN users ON articles.user = users.id
             WHERE articles.status = "published"
-            ORDER BY created DESC`
-        )
+            ORDER BY created DESC
+            LIMIT ${skipQuery}5`
+        let params = skip ? [skip] : []
+        let [rows] = await db.connection.execute( query, params )
         var all = rows.map(async row => {
             var content = await $promisify(
                 marked,
@@ -36,11 +40,21 @@ pages.get('/list', async (req, res, next) => {
             return row
         })
         var rows2 = await Promise.all(all)
-        res.render('v-list', {
+
+        var view = 'v-list'        
+        var torender : any = {
             title : config.main_title ,
             items: rows2,
-            $atRoot : true
-        })
+            $atRoot: true ,
+            skipped : (skip || 0)
+        }
+
+        if (req.query.raw) {
+            torender.layout = 'flat-layout'
+            view = 'v-list-partial'
+        }
+
+        res.render(view, torender)
     } catch (err) {
         next(err)
     }

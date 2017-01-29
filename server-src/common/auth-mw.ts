@@ -13,7 +13,7 @@ export var initSession = expressSession({
     },
     resave : true ,
     saveUninitialized : true ,
-    store : new mysqlStore({}, db.legacyConnection)
+    store : new mysqlStore({}, db.rawConnection)
 })
 
 

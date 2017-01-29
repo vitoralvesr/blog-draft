@@ -1,10 +1,8 @@
-import mysql = require('mysql2/promise')
-import mysqlLegacy = require('mysql2')
+import mysql = require('mysql2')
 import changeCase = require('change-case')
 
-export var connection: MySql.Connection
-//express-session wont work with mysql2/promise version...
-export var legacyConnection: MySql.Connection
+export var rawConnection
+export var connection : MySql.Connection
 
 const connectionParams = (poolSize) => ({
     connectionLimit : poolSize ,
@@ -15,19 +13,18 @@ const connectionParams = (poolSize) => ({
     trace: false
 })
 
-/*
-export async function init() {
-    if (connection) return
-    connection = await mysql.createPool( connectionParams(4) );
-    connection.connection.config.namedPlaceholders = true;
-    legacyConnection = await mysqlLegacy.createPool( connectionParams(2) )
-}
-*/
 
 export async function init() {
-    if (connection) return
-    connection = mysql.createPool(connectionParams(4))
-    legacyConnection = mysqlLegacy.createPool(connectionParams(2))
+    if (rawConnection) return
+    var pool = mysql.createPool(connectionParams(4))
+    rawConnection = pool
+
+    var boundQuery = pool.query.bind(pool)    
+    connection = {
+        async execute(...args) {
+            return $promisify( boundQuery , ...args )
+        }
+    }
 }
 
 

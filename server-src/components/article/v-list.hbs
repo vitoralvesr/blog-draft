@@ -72,6 +72,7 @@
 
 <script>
     $(function(){
+        var __skipped = '{{skipped}}'
         var $fixedMenu = $('.fixed.menu')
         $('.mhead').visibility({
             once : false ,
@@ -90,6 +91,28 @@
             .css('max-height', '30em')
             .css('margin-left', 'auto')
             .css('margin-right', 'auto')
+
+        var $infinite = $('.infinite-s')
+        var $infiniteLoader = $infinite.find('> .segment')
+        $infinite.visibility({
+            once: false ,
+            onTopVisible : function() {
+                $infiniteLoader.dimmer('show')
+                let nextSkip = Number(__skipped) + Number($('.post.segment').length)
+                Site.ajaxHtml(
+                    { url : '/pages/article/list?raw=1&skip=' + nextSkip}
+                ).then(function(html) {
+                    $infiniteLoader.dimmer('hide')                    
+                    var $next = $(html)
+                    $infinite.before($next)
+                })
+                .catch(function(error) {
+                    $infiniteLoader.dimmer('hide')                    
+                    console.error(error)
+                    throw error
+                })
+            }
+        })
     })
 </script>
 
@@ -108,26 +131,17 @@
 </div>
 
 <div>
-    {{#each items}}
-    <div class="ui vertical post borderless segment">
-        <div class="ui text container">
-            <div class="article-heading">                
-                <h1 class="ui header">{{title}}</h1>
-                <div class="post-meta">{{userDisplayName}} em {{formattedDate}}</div>
-            </div>
-            <div class="article-content" data-post-id="{{id}}">
-                <div class="buttons">
-                    {{#if @root.$online}}
-                    <a href="/pages/article/{{id}}/edit">
-                        <div class="ui icon button">
-                            <i class="edit icon"></i>
-                        </div>
-                    </a>
-                    {{/if}}
-                </div>
-                {{{content}}}
+
+
+    {{> v-list-partial}}
+
+
+    <div class="ui vertical borderless segment infinite-s">
+        <div class="ui text container segment" style="text-align: center;height:3em;">
+            <div class="ui dimmer">
+                <div class="ui loader"></div>
             </div>
         </div>
     </div>
-    {{/each}}
+
 </div>

@@ -8,7 +8,10 @@ pages.engine('.hbs', ehbs({
     extname: '.hbs' ,
     defaultLayout : 'main-layout' ,
     layoutsDir: '../server-src/components/_views/layouts',
-    partialsDir: '../server-src/components/_views/partials'
+    partialsDir: [
+        '../server-src/components/_views/partials',
+        '../server-src/components/article'
+    ]
 }));
 pages.set('view engine', '.hbs')
 pages.set('views', '../server-src/components')
