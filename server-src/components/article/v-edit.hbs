@@ -64,10 +64,16 @@
         <a href="#" class="ui button" onclick="window.history.go(-1)">Cancelar</a>
         <div
             onclick="deletePost()"
-            class="ui labeled icon button basic right floated">
+            class="ui labeled icon button basic red right floated">
             <i class="icon trash"></i>
             Excluir
-        </a>
+        </div>
+        <div
+            id="revertBtn"
+            class="ui labeled icon button basic right floated">
+            <i class="icon backward"></i>
+            Reverter
+        </div>        
 
     </form>
 
@@ -81,6 +87,9 @@ $(function() {
     Editor.editorHack(editor)    
     var isDraft = '{{article.status}}' == 'draft'
     Editor.initSubmitter($('.submitter'), isDraft, articleForm)
+    Editor.localDraft(
+        editor, '{{article.edited}}', '{{article.id}}',
+        '{{noLocalDraft}}')    
 
 
     window.deletePost = function() {

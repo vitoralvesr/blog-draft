@@ -7,8 +7,14 @@
 
     var _submitting = false
 
+    exports.submitHooks = []
+
     exports.jsonForm = jsonForm
     function jsonForm(formEl, opts) {
+
+        exports.submitHooks.forEach( function(hook) {
+            hook()
+        })
 
         var submitClicked = false
         $('input[type=submit]').on('click', function () {

@@ -9,7 +9,7 @@ api.put('/:id?',  async (req, res, next) => {
         req.body.status = req.body.status || 'published'        
         //var provider = await ArticleProvider.init(req.body.id)
         //await provider.update(req.body)
-        let trimmed = (req.body.content||'').substr(0,380) + ' ...'
+        let trimmed = (req.body.content||'').substr(0,380)
         await db.execute(
             `UPDATE articles SET title = ?, content = ?, trimmed_content = ?, status = ?
             WHERE id = ?`,
@@ -69,6 +69,12 @@ api.delete('/:id', async (req, res, next) => {
 })
 
 
+api.get('/ping', (req, res, next) => {
+    var d = new Date()
+    return res.status(200).send({ tzoffset : d.getTimezoneOffset() })    
+})
+
+
 api.get('/:id', async (req, res, next) => {
     try {
         $checkParams(req.params, 'id')
@@ -77,7 +83,8 @@ api.get('/:id', async (req, res, next) => {
     } catch (err) {
         next(err)
     }
- })
+})
+ 
 
 
 /*

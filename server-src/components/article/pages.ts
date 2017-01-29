@@ -63,7 +63,8 @@ pages.get('/:pageId/edit', auth.authGate, async (req, res, next) => {
         res.render('v-edit', { 
             title: 'Editando artigo :: ' + article.title ,
             article,
-            $scripts: [ '/assets/editor/editor.js' ]
+            $scripts: ['/assets/editor/editor.js'],
+            noLocalDraft : req.query.fresh ? '1' : ''
         })
     } catch (err) {
         next(err)
