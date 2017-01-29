@@ -10,7 +10,10 @@ api.put('/:id?',  async (req, res, next) => {
         req.body.content = req.body.content || ''
         req.body.trimmed_content = (req.body.content || '').substr(0, 380)
         var fields = ['title', 'content', 'trimmed_content', 'status']
-        if (req.body.created) fields.push('created')
+        if (req.body.created) {
+            fields.push('created')
+            req.body.created = new Date(req.body.created)
+        }
         if (req.body.markdown_break !== undefined) fields.push('markdown_break')
         await simpleUpdate({
             fields,

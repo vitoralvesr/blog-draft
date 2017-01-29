@@ -338,7 +338,7 @@
                 newdate.setHours(Number(datesplit[3]))
                 newdate.setMinutes(Number(datesplit[4]))
                 if (isNaN(newdate.getTime())) return
-                outp.created = date
+                outp.created = newdate
             })
         }
 
