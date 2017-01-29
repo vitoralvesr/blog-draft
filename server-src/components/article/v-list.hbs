@@ -104,6 +104,10 @@
                 ).then(function(html) {
                     $infiniteLoader.dimmer('hide')                    
                     var $next = $(html)
+                    if (!$next.length) {
+                        $infinite.remove()
+                        return
+                    }
                     $infinite.before($next)
                 })
                 .catch(function(error) {
