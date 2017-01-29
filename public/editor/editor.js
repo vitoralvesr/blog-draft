@@ -331,12 +331,13 @@
 
             callbacks.push(function (outp) {
                 let datesplit = $text.val().split(/[\s:\/]/g)
-                var date = new Date()
-                date.setDate(Number(datesplit[0]))
-                date.setMonth(Number(datesplit[1]) - 1)
-                date.setFullYear(Number(datesplit[2]))
-                date.setHours(Number(datesplit[3]))
-                date.setMinutes(Number(datesplit[4]))
+                var newdate = new Date()
+                newdate.setDate(Number(datesplit[0]))
+                newdate.setMonth(Number(datesplit[1]) - 1)
+                newdate.setFullYear(Number(datesplit[2]))
+                newdate.setHours(Number(datesplit[3]))
+                newdate.setMinutes(Number(datesplit[4]))
+                if (isNaN(newdate.getTime())) return
                 outp.created = date
             })
         }

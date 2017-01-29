@@ -101,7 +101,7 @@ $(function() {
     $('.post-options').on('click', function(){
         Editor.showPostOptions( __toset , function(result) {
             if (!result) return
-            __toset = result
+            __toset = jQuery.extend(__toset, result)
         })
     })
 
