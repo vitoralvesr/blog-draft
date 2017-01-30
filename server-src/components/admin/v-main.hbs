@@ -58,13 +58,14 @@
 
 <script>
 $(function(){
+    window.Admin = {}
     var __root = '/pages/admin/'
     var windowEl = document.querySelector('.content .window')        
     var $allItems = $('.content .menu .item')
 
-    function selectItem(identifier) {
+    function selectItem(identifier, extra) {
         var content = Site.ajaxHtml({ 
-            url : __root + identifier
+            url : __root + identifier + (extra||'')
         }).then( function(content) {
             windowEl.innerHTML = content
             $allItems.removeClass('active')
@@ -84,6 +85,7 @@ $(function(){
             })
         })
     }
+    Admin.selectItem = selectItem
 
     var toSelect = String(window.location.hash).substr(1)
     selectItem(toSelect || 'articles')

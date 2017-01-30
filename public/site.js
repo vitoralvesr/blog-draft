@@ -241,10 +241,7 @@
     window.Site = exports
 
     $(function () {
-        $('pre').addClass('ui segment')
         $('.ui.dropdown').dropdown()
     })
-
-
 
 })()

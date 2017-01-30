@@ -13,24 +13,33 @@ export = admin;
 admin.use(authGate)
 
 
+var N_ARTICLES = 5
+
 admin.get('/articles', async (req, res, next) => {
     try {
         //mvc é um padrão opressor imposto pela burguesia
+        let [count_res] = await db.execute(`SELECT COUNT(id) AS cnt FROM articles`)
+        let count = Number(count_res[0].cnt)|| 0
         let [articles] = await db.execute(`SELECT
             id, title, trimmed_content, created, status
             FROM articles
             ORDER BY created DESC
-            LIMIT 10`)
+            LIMIT ?, ${N_ARTICLES}`, [Number(req.query.skip) || 0])
         articles = articles.map( article => {
             article.formattedDate = moment(article.created).format(config.config.timestamp_format)
             article.formattedContent = entities.encode(article.trimmed_content)
             article.isDraft = article.status == 'draft'
             return article
         })
-        res.render('v-articles', {
+        var torender : any = {
             layout: 'flat-layout',
             articles
-        })
+        }
+        let skip = Number(req.query.skip) || 0
+        if (skip > 0) torender.prev = String(Math.max(skip - N_ARTICLES , 0))
+        let next = skip + articles.length
+        if (next < count) torender.next = next
+        res.render('v-articles', torender)
     } catch (err) {
         next(err)
     }

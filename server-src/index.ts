@@ -18,6 +18,7 @@ import ono = require('ono')
 import database = require('./common/database')
 import roles = require('./common/roles')
 import config = require('./common/config')
+import slink = require('./common/slink')
 import '@common/mail' //init
 import favicon = require('serve-favicon')
 import compression = require('compression')
@@ -69,6 +70,7 @@ database.init().then(() => {
     return Promise.all([
         roles.init(),
         config.init(),
+        slink.init(),
     ])
 }).then(() => {
 

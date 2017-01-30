@@ -1,11 +1,13 @@
 {{#each items}}
 <div class="ui vertical post borderless segment">
     <div class="ui text container">
-        <div class="article-heading">                
-            <h1 class="ui header">{{title}}</h1>
+        <div class="article-heading">
+            <a href="/pages/article/slink/{{slink}}?id={{id}}">
+                <h1 class="ui header">{{title}}</h1>
+            </a>
             <div class="post-meta">{{userDisplayName}} em {{formattedDate}}</div>
         </div>
-        <div class="article-content" data-post-id="{{id}}">
+        <div class="article-content">
             <div class="buttons">
                 {{#if @root.$online}}
                 <a href="/pages/article/{{id}}/edit">

@@ -39,6 +39,14 @@
 
 </style>
 
+{{#if prev}}
+<div class="ui labeled icon button" onclick="Admin.selectItem('articles', '?skip={{prev}}')"
+    style="margin-bottom:15px;">
+    <i class="icon caret left"></i>
+    Mais recentes
+</div>
+{{/if}}
+
 <div class="ui segments" style="margin-top:0px">
 
     {{#each articles}}
@@ -62,8 +70,14 @@
         <p class="article-content">{{{ formattedContent }}}</p>
     </div>
     {{/each}}
-
 </div>
+
+{{#if next}}
+<div class="ui right labeled icon button" onclick="Admin.selectItem('articles', '?skip={{next}}')">
+    <i class="icon caret right"></i>
+    Mais antigos
+</div>
+{{/if}}  
 
 <script>
     var exported = function() {

@@ -3,10 +3,23 @@
         display: block;
         padding: 1.5em 0;
     }
-    .article-heading > .ui.header {
+    .article-heading > a > .ui.header {
         display: inline-block;
-        margin-bottom: 0;
+        margin-bottom: 0;     
     }
+
+    .article-heading > a > .ui.header:hover {
+        text-decoration: underline;
+    }
+
+    .article-content img {
+        display: block;
+        max-width: 100%;
+        max-height: 30em;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
     .post-meta {
         color: #cac8c8;
         font-style: italic;        
@@ -71,53 +84,61 @@
 </style>
 
 <script>
-    $(function(){
-        var __skipped = '{{skipped}}'
-        var $fixedMenu = $('.fixed.menu')
-        $('.mhead').visibility({
-            once : false ,
-            onBottomPassed: function() {
-                $fixedMenu.transition('fade in')
-            } ,
-            onBottomPassedReverse: function() {
-                $fixedMenu.transition('fade out')
-            }
-        })
-        var $content = $('.article-content')
-        $content.find('table').addClass('ui collapsing table')
-        $content.find('img')
-            .css('display' , 'block')
-            .css('max-width', '100%')
-            .css('max-height', '30em')
-            .css('margin-left', 'auto')
-            .css('margin-right', 'auto')
-
-        var $infinite = $('.infinite-s')
-        var $infiniteLoader = $infinite.find('> .segment')
-        $infinite.visibility({
-            once: false ,
-            onTopVisible : function() {
-                $infiniteLoader.dimmer('show')
-                let nextSkip = Number(__skipped) + Number($('.post.segment').length)
-                Site.ajaxHtml(
-                    { url : '/pages/article/list?raw=1&skip=' + nextSkip}
-                ).then(function(html) {
-                    $infiniteLoader.dimmer('hide')                    
-                    var $next = $(html)
-                    if (!$next.length) {
-                        $infinite.remove()
-                        return
-                    }
-                    $infinite.before($next)
-                })
-                .catch(function(error) {
-                    $infiniteLoader.dimmer('hide')                    
-                    console.error(error)
-                    throw error
-                })
-            }
-        })
+$(function(){
+    var __skipped = '{{skipped}}'
+    var $fixedMenu = $('.fixed.menu')
+    $('.mhead').visibility({
+        once : false ,
+        onBottomPassed: function() {
+            $fixedMenu.transition('fade in')
+        } ,
+        onBottomPassedReverse: function() {
+            $fixedMenu.transition('fade out')
+        }
     })
+
+    function enhancePost($inp) {
+        $content = $inp.find('.article-content')
+        $content.find('pre').addClass('ui segment')        
+        $content.find('table').addClass('ui collapsing table')
+    }
+
+    enhancePost($(document.body))
+
+
+    var $infinite = $('.infinite-s')
+    var $infiniteLoader = $infinite.find('> .segment')
+
+    if ({{noRoll}}) {
+        $infinite.remove()
+        return
+    }
+
+    $infinite.visibility({
+        once: false ,
+        onTopVisible : function() {
+            $infiniteLoader.dimmer('show')
+            let nextSkip = Number(__skipped) + Number($('.post.segment').length)
+            Site.ajaxHtml(
+                { url : '/pages/article/list?raw=1&skip=' + nextSkip}
+            ).then(function(html) {
+                $infiniteLoader.dimmer('hide')                    
+                var $next = $(html)
+                if (!$next.length) {
+                    $infinite.remove()
+                    return
+                }
+                enhancePost($next)                    
+                $infinite.before($next)
+            })
+            .catch(function(error) {
+                $infiniteLoader.dimmer('hide')                    
+                console.error(error)
+                throw error
+            })
+        }
+    })
+})
 </script>
 
 <div class="ui inverted vertical left aligned segment mhead">
@@ -127,9 +148,11 @@
     </div>    
 
     <div class="ui text container">
+        <a href="/">
         <h1 class="ui inverted header">
             {{$blogTitle}}
         </h1>
+        </a>
         <h2>{{$blogSubtitle}}</h2>
     </div>
 </div>

@@ -1,6 +1,7 @@
 import express = require('express')
 const api = express.Router()
 import { connection as db, insert, simpleUpdate } from '@common/database'
+import { createSlink } from '@common/slink'
 //import { ArticleProvider } from './providers'
 
 api.put('/:id?',  async (req, res, next) => {
@@ -9,10 +10,15 @@ api.put('/:id?',  async (req, res, next) => {
         req.body.status = req.body.status || 'published'
         req.body.content = req.body.content || ''
         req.body.trimmed_content = (req.body.content || '').substr(0, 380)
-        var fields = ['title', 'content', 'trimmed_content', 'status']
+        req.body.edited = new Date()
+        var fields = ['title', 'content', 'trimmed_content', 'status', 'edited']
         if (req.body.created) {
             fields.push('created')
             req.body.created = new Date(req.body.created)
+        }
+        if (req.body.slink) {
+            fields.push('slink')
+            req.body.slink = createSlink(req.body.slink)
         }
         if (req.body.markdown_break !== undefined) fields.push('markdown_break')
         await simpleUpdate({
@@ -35,9 +41,10 @@ api.post('/', async (req, res, next) => {
         if (req.body.source === 'git')
             $checkParams(req.body, 'githubUser', 'githubRepo', 'githubPath')
         req.body.user = Number(req.session.userId)
-        req.body.trimmed_content = (req.body.content || '').substr(0, 380) + ' ...'
+        req.body.trimmed_content = (req.body.content || '').substr(0, 380)
+        req.body.slink = createSlink(req.body.title)
         var fields =  ['source', 'githubUser', 'githubRepo', 'githubPath',
-            'title', 'content', 'user', 'trimmed_content', 'status']
+            'title', 'content', 'user', 'trimmed_content', 'status', 'slink']
         if (req.body.markdown_break !== undefined) fields.push('markdown_break')
         await insert({
             into: 'articles',

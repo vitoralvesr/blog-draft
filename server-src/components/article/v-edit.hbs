@@ -65,8 +65,14 @@
             </div>
         </div>
 
-        <!-- <input type="submit" class="ui button primary" value="Salvar"/> -->
+        <a href="/pages/article/slink/{{article.slink}}?id={{article.id}}" class="ui labeled icon button">
+            <i class="unhide icon"></i>
+            Ver post
+        </a>
+
         <a href="#" class="ui button" onclick="Site.goBack()">Cancelar</a>
+
+
         <div
             onclick="deletePost()"
             class="ui labeled icon button basic red right floated">
