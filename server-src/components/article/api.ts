@@ -12,6 +12,7 @@ api.put('/:id?',  async (req, res, next) => {
         req.body.status = req.body.status || 'published'
         req.body.content = req.body.content || ''
         req.body.trimmed_content = ellipsize(req.body.content, 990)
+        if (req.body.markdown_break !== undefined) req.body.markdown_break = Number(req.body.markdown_break)
         req.body.edited = new Date()
         var fields = ['title', 'content', 'trimmed_content', 'status', 'edited']
         if (req.body.created) {
@@ -44,6 +45,7 @@ api.post('/', async (req, res, next) => {
             $checkParams(req.body, 'githubUser', 'githubRepo', 'githubPath')
         req.body.user = Number(req.session.userId)
         req.body.trimmed_content = ellipsize(req.body.content, 990)
+        if (req.body.markdown_break !== undefined) req.body.markdown_break = Number(req.body.markdown_break)
         req.body.slink = createSlink(req.body.title)
         var fields =  ['source', 'githubUser', 'githubRepo', 'githubPath',
             'title', 'content', 'user', 'trimmed_content', 'status', 'slink']
