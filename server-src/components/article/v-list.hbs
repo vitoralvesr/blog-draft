@@ -23,7 +23,11 @@
     .post-meta, .show-more {
         color: #cac8c8;
         font-style: italic;        
-    }    
+    }
+    .show-more {
+        position: relative;
+        top: -15px;
+    }
     .article-content {
         position: relative;
     }
@@ -160,7 +164,7 @@ $(function(){
 <div>
 
 
-    {{> v-list-partial}}
+{{> v-list-partial}}
 
 
     <div class="ui vertical borderless segment infinite-s">
