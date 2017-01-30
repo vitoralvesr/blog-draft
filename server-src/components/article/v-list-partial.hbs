@@ -18,6 +18,13 @@
                 {{/if}}
             </div>
             {{{content}}}
+
+            {{#if @root.truncated}}
+            <a href="/pages/article/slink/{{slink}}?id={{id}}">
+                <p class="show-more">Continuar lendo...</p>
+            </a>
+            {{/if}}
+
         </div>
     </div>
 </div>

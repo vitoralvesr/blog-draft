@@ -2,6 +2,8 @@ import express = require('express')
 const api = express.Router()
 import { connection as db, insert, simpleUpdate } from '@common/database'
 import { createSlink } from '@common/slink'
+import ellipsize = require('ellipsize')
+
 //import { ArticleProvider } from './providers'
 
 api.put('/:id?',  async (req, res, next) => {
@@ -9,7 +11,7 @@ api.put('/:id?',  async (req, res, next) => {
         $checkParams(req.body, 'id')
         req.body.status = req.body.status || 'published'
         req.body.content = req.body.content || ''
-        req.body.trimmed_content = (req.body.content || '').substr(0, 380)
+        req.body.trimmed_content = ellipsize(req.body.content, 990)
         req.body.edited = new Date()
         var fields = ['title', 'content', 'trimmed_content', 'status', 'edited']
         if (req.body.created) {
@@ -41,7 +43,7 @@ api.post('/', async (req, res, next) => {
         if (req.body.source === 'git')
             $checkParams(req.body, 'githubUser', 'githubRepo', 'githubPath')
         req.body.user = Number(req.session.userId)
-        req.body.trimmed_content = (req.body.content || '').substr(0, 380)
+        req.body.trimmed_content = ellipsize(req.body.content, 990)
         req.body.slink = createSlink(req.body.title)
         var fields =  ['source', 'githubUser', 'githubRepo', 'githubPath',
             'title', 'content', 'user', 'trimmed_content', 'status', 'slink']

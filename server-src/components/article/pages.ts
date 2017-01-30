@@ -20,7 +20,8 @@ pages.get('/list', async (req, res, next) => {
         var { view, torender } = await _showPosts({
             skip: req.query.skip,
             count: req.query.count,
-            raw : req.query.raw
+            raw: req.query.raw,
+            truncate : true
         })
         res.render(view, torender)
     } catch (err) {
@@ -97,6 +98,7 @@ type showPostOpt = {
     raw?
     id?
     slink?
+    truncate?
 }
 async function _showPosts(opts: showPostOpt) {
     var filters = []
@@ -121,11 +123,13 @@ async function _showPosts(opts: showPostOpt) {
         params.push(opts.slink)
     }
 
+    var contentQuery = (opts.truncate) ? 'a.trimmed_content AS content' : 'a.content'
+
     params.push(Number(opts.skip) || 0, Number(opts.count) || 5)
     if (opts.slink || opts.id) opts.count = 1
 
     let query = `SELECT
-    a.id, a.slink, a.title, a.created, a.content, a.markdown_break, u.display_name
+    a.id, a.slink, a.title, a.created, ${contentQuery}, a.markdown_break, u.display_name
         FROM articles a LEFT JOIN users u ON a.user = u.id
         WHERE ${filters.join(' AND ')}
         ORDER BY created DESC
@@ -146,7 +150,8 @@ async function _showPosts(opts: showPostOpt) {
         items: rows2,
         $atRoot: true ,
         skipped: Number(opts.skip) || 0 ,
-        noRoll: (opts.slink || opts.id) ? true : false
+        noRoll: (opts.slink || opts.id) ? true : false,
+        truncated : opts.truncate
     }
 
     if (opts.raw) {
@@ -160,7 +165,7 @@ async function _showPosts(opts: showPostOpt) {
 async function _processPost(row) {
     var content = await $promisify(
         marked,
-        row.content||'',
+        (row.content||''),
         {
             sanitize: config.sanitize_markdown == true,
             breaks: row.markdown_break == true
