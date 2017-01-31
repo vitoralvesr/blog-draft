@@ -14,7 +14,7 @@ On windows you need a working node-gyp for building bcrypt.
 Achieve that by installing [the miraculous windows build tools](https://github.com/felixrieseberg/windows-build-tools).
 
 - `npm i`  
-- Run the database dump  (`init.sql`)
+- Run the database installs (`*.sql`) in order
 - Set the required environment variables (on your editor debugger, or create a sh script, or use pm2, etc)  
   - you may just put placeholders on the email server ones.
 - `cwd` MUST BE `./server-dist`
