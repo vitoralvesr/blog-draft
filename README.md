@@ -22,10 +22,6 @@ Achieve that by installing [the miraculous windows build tools](https://github.c
 
 Should be it. Run `node .`
 
-**Current main caveats**
-
-I didn't test it in _Firefox_ or _Safari_. Thats's in the queue. It's 100% certain that it will not work on them.
-
 # Configurable environment variables
 
 > asterisk means required
