@@ -1,6 +1,6 @@
 # What's this?
 
-This was a mere code sample who turned into a blog, which will turn into a CMS.
+This was a mere code sample. I then became a blog. It will turn into a CMS.
 
 # Startup
 
