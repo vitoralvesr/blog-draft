@@ -1,3 +1,7 @@
+# What's this?
+
+This was a mere code sample who turned into a blog, which will turn into a CMS.
+
 # Startup
 
 **Prerequisites**  
