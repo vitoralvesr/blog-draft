@@ -10,6 +10,8 @@ Demo version (no users/authentication) running at [this $1 domain](https://www.c
 
 **Quickstart**
 
+Get a tagged commit version (master is currently unstable).
+
 On windows you need a working node-gyp for building bcrypt.
 Achieve that by installing [the miraculous windows build tools](https://github.com/felixrieseberg/windows-build-tools).
 
