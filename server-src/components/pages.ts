@@ -1,6 +1,7 @@
 import express = require('express')
 const pages = express()
 import { config } from '@common/config'
+import path = require('path')
 
 //handlebars setup
 import ehbs = require('express-handlebars')
@@ -9,13 +10,13 @@ pages.engine('.hbs', ehbs({
     defaultLayout : 'main-layout' ,
     layoutsDir: '../server-src/components/_views/layouts',
     partialsDir: [
-        '../server-src/components/_views/partials',
-        '../server-src/components/article'
+        '../server-src/components/_views/partials'
     ]
 }));
 pages.set('view engine', '.hbs')
 pages.set('views', '../server-src/components')
 
+var TEMPLATE_PATH = path.resolve( process.cwd(), '../template-media' )
 
 /**
  * Override res.render. Reroute views. Add global variables.
@@ -37,8 +38,15 @@ pages.response = <any>{
         let url = this.req.originalUrl.split('/').slice(1)
         if (path.charAt(0) === '@')
             return oldRender.bind(this)('_views/' + path.substr(1), extendedParams, ...params)
+        
+        if (path.chatAt(0) === '#') {
+            let newpath = path.resolve( TEMPLATE_PATH , path.substr(1) )
+            return oldRender.bind(this)( newpath, extendedParams, ...params )    
+        }
+
         if (url[0] !== 'pages')
             return oldRender.bind(this)(path, extendedParams, ...params)
+        
         return oldRender.bind(this)( url[1] + '/' + path, extendedParams, ...params )
     }
 }
